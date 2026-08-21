@@ -1,8 +1,8 @@
 # Render Blueprint Configuration
-# Deploy UrbanNest Lifestyle Store in 1 click
+# Deploy Little Joys Lifestyle Store in 1 click
 services:
   - type: web
-    name: urbannest-lifestyle-store
+    name: little-joys-lifestyle-store
     env: python
     buildCommand: ""
     startCommand: python3 app.py
