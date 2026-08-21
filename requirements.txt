@@ -1,0 +1,3 @@
+# Zero external dependencies required - runs natively on Python 3 Standard Library
+# Optional production WSGI server if desired:
+# gunicorn>=21.2.0

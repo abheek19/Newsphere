@@ -1,0 +1,78 @@
+{
+  "name": "UrbanNest Query Form Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "urbannest-query",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "urbannest-query-webhook"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "received"
+            },
+            {
+              "name": "processedAt",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "name": "priority",
+              "value": "={{ $json.body.query_category === 'Bulk Order' ? 'URGENT' : 'STANDARD' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Process Query Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Query successfully processed by UrbanNest N8N Automation Pipeline!\",\n  \"ticket_id\": \"{{ $json.body.ticket_id }}\",\n  \"assigned_agent\": \"UrbanNest Customer Concierge\",\n  \"estimated_response_time\": \"Within 1 business hour\"\n}",
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Process Query Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Query Data": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

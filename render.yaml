@@ -1,0 +1,11 @@
+# Render Blueprint Configuration
+# Deploy UrbanNest Lifestyle Store in 1 click
+services:
+  - type: web
+    name: urbannest-lifestyle-store
+    env: python
+    buildCommand: ""
+    startCommand: python3 app.py
+    envVars:
+      - key: PORT
+        value: 10000

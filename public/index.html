@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UrbanNest Lifestyle Store | Little Things. Beautiful Living.</title>
+  <meta name="description" content="UrbanNest Lifestyle Store - Handcrafted home décor, curated gifts, aesthetic stationery, and sustainable lifestyle essentials." />
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>" />
+</head>
+<body>
+
+  <!-- 1. Top Announcement / Promo Bar -->
+  <div class="promo-bar">
+    <span>✨ Grand Online Launch: Use code <strong class="promo-code-badge" onclick="copyCoupon('URBAN10')" title="Click to copy code">URBAN10</strong> for 10% OFF + FREE Local Shipping on $35+</span>
+  </div>
+
+  <!-- 2. Sticky Blurred Navigation Header -->
+  <header class="main-header">
+    <div class="container nav-container">
+      <a href="#hero" class="brand-logo">
+        <div class="logo-icon">🌿</div>
+        <div class="brand-text">
+          <h1>UrbanNest</h1>
+          <span class="brand-tagline">Lifestyle Store</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#hero" class="nav-link active">Home</a></li>
+          <li><a href="#catalog" class="nav-link">Collection</a></li>
+          <li><a href="#about" class="nav-link">Our Story</a></li>
+          <li><a href="#why-us" class="nav-link">Why Us</a></li>
+          <li><a href="#location" class="nav-link">Visit Store</a></li>
+          <li><a href="#query-form" class="nav-link">Submit Query</a></li>
+        </ul>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="nav-actions">
+        <button id="themeToggleBtn" class="icon-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <span id="themeToggleIcon">🌙</span>
+        </button>
+
+        <button id="cartOpenBtn" class="icon-btn" title="View Shopping Bag" aria-label="Shopping Bag">
+          <span>🛍️</span>
+          <span id="cartBadgeCount" class="badge-count" style="display: none;">0</span>
+        </button>
+
+        <button class="btn btn-primary" onclick="window.chatbot.toggleChat(true)">
+          <span>🤖 Ask AI</span>
+        </button>
+
+        <button id="mobileMenuBtn" class="icon-btn mobile-menu-btn" aria-label="Open Menu">
+          <span>☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 3. Hero Section -->
+    <section id="hero" class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-text-content">
+          <div class="hero-tag">
+            <span>✨ Curated Artisan Living</span>
+          </div>
+          <h1 class="hero-title">
+            Little Things.<br />
+            <span class="highlight">Beautiful Living.</span>
+          </h1>
+          <p class="hero-description">
+            Welcome to <strong>UrbanNest</strong> — your neighborhood boutique now online. Explore thoughtfully crafted home décor, bespoke gift hampers, artisan stationery, and everyday sustainable lifestyle treasures.
+          </p>
+          <div class="hero-cta-group">
+            <a href="#catalog" class="btn btn-primary">
+              <span>Explore Collection ↓</span>
+            </a>
+            <button id="heroQuizBtn" class="btn btn-secondary">
+              <span>✨ AI Gift Matcher</span>
+            </button>
+            <a href="#query-form" class="btn btn-secondary">
+              <span>Inquire / Custom Orders</span>
+            </a>
+          </div>
+          <div class="hero-stats-bar">
+            <div class="stat-item">
+              <h3><span class="stat-number" data-target="1500">1,500</span>+</h3>
+              <p>Happy Homes Styled</p>
+            </div>
+            <div class="stat-item">
+              <h3><span class="stat-number" data-target="100">100</span>%</h3>
+              <p>Handcrafted & Curated</p>
+            </div>
+            <div class="stat-item">
+              <h3>4.9 ★</h3>
+              <p>Customer Satisfaction</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual Element -->
+        <div class="hero-visual-card">
+          <div class="hero-main-img-wrap float-animation">
+            <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1000&q=80" alt="UrbanNest Lifestyle Store Interior & Products" />
+          </div>
+          <div class="hero-floating-badge badge-top-left">
+            <div class="badge-icon-box">🌿</div>
+            <div>
+              <div class="badge-text-top">Eco Conscious</div>
+              <div class="badge-text-main">Plastic-Free Packaging</div>
+            </div>
+          </div>
+          <div class="hero-floating-badge badge-bottom-right">
+            <div class="badge-icon-box">⚡</div>
+            <div>
+              <div class="badge-text-top">Automated Concierge</div>
+              <div class="badge-text-main">N8N.io AI Powered</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Interactive Product Catalog Section -->
+    <section id="catalog" class="section-spacing">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Curated Collections</span>
+          <h2 class="section-title">Explore Our Lifestyle Pieces</h2>
+          <p class="section-subtitle">
+            From artisanal ceramics to bespoke gift boxes and desk essentials, explore items designed to bring tranquility to your space.
+          </p>
+        </div>
+
+        <!-- Catalog Controls (Search, Categories, Sort) -->
+        <div class="catalog-controls">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="productSearchInput" placeholder="Search by name, material, or keyword..." />
+          </div>
+
+          <div class="category-pills">
+            <button class="category-btn active" data-category="all">All Items</button>
+            <button class="category-btn" data-category="home-decor">Home Décor</button>
+            <button class="category-btn" data-category="gift-items">Gift Items</button>
+            <button class="category-btn" data-category="stationery">Stationery</button>
+            <button class="category-btn" data-category="accessories">Accessories</button>
+            <button class="category-btn" data-category="household">Household</button>
+          </div>
+
+          <div>
+            <select id="productSortSelect" class="sort-select">
+              <option value="featured">✨ Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Grid Container -->
+        <div id="productsGrid" class="products-grid">
+          <!-- Dynamically populated by products.js -->
+        </div>
+
+        <!-- AI Gift Recommender CTA Banner -->
+        <div style="background: linear-gradient(135deg, rgba(200, 100, 70, 0.12), rgba(79, 109, 87, 0.12)); border: 1px dashed var(--border-strong); border-radius: var(--radius-lg); padding: 2.5rem; margin-top: 3.5rem; text-align: center;">
+          <h3 style="font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 0.5rem;">Can't decide what to choose?</h3>
+          <p style="color: var(--text-secondary); max-width: 540px; margin: 0 auto 1.5rem;">Take our quick 30-second AI Gift & Lifestyle Matcher to receive curated product recommendations tailored to your taste and budget.</p>
+          <button id="openQuizBtn" class="btn btn-primary">
+            <span>✨ Launch AI Lifestyle Matcher</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. About the Shop Section -->
+    <section id="about" class="section-spacing about-section">
+      <div class="container about-grid">
+        <div class="about-mosaic">
+          <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80" alt="UrbanNest Shop Interior" class="mosaic-img-1" />
+          <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80" alt="Artisan Craftsmanship" class="mosaic-img-2" />
+        </div>
+
+        <div class="about-content">
+          <span class="section-tag">Our Story & Heritage</span>
+          <h2>A Small Local Shop, Now Bringing Warmth to Every Home</h2>
+          <p class="about-lead">Founded in the heart of the Artisan Quarter, UrbanNest was born from a simple belief: daily objects should spark joy.</p>
+          <p class="about-text">
+            For years, our physical boutique has been the beloved sanctuary where neighborhood creators, homeowners, and gift seekers meet. By partnering with local master crafters and sustainable suppliers, we bring you timeless lifestyle pieces that elevate everyday routines.
+          </p>
+
+          <div class="about-pillars">
+            <div class="pillar-item">
+              <div class="pillar-icon">🏺</div>
+              <div class="pillar-text">
+                <h4>Small Batch Craft</h4>
+                <p>Every piece is sourced from independent artisans and crafted with love.</p>
+              </div>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon">🌱</div>
+              <div class="pillar-text">
+                <h4>Sustainable Living</h4>
+                <p>Recycled materials, non-toxic glazes, and 100% plastic-free packaging.</p>
+              </div>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon">🤝</div>
+              <div class="pillar-text">
+                <h4>Personalized Care</h4>
+                <p>Custom gift box curation with handwritten wax-sealed notes.</p>
+              </div>
+            </div>
+            <div class="pillar-item">
+              <div class="pillar-icon">⚡</div>
+              <div class="pillar-text">
+                <h4>N8N Smart Support</h4>
+                <p>Intelligent workflow automation ensuring quick response times.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Why Choose Us Section -->
+    <section id="why-us" class="section-spacing">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Why UrbanNest</span>
+          <h2 class="section-title">The UrbanNest Difference</h2>
+          <p class="section-subtitle">We bridge the personal touch of a neighborhood boutique with modern convenience.</p>
+        </div>
+
+        <div class="why-us-grid">
+          <div class="why-card">
+            <div class="why-icon">✨</div>
+            <h3>Quality Products</h3>
+            <p>Hand-inspected materials, durable ceramic glazes, natural soy waxes, and heirloom brass built to last for years.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">🏷️</div>
+            <h3>Affordable Prices</h3>
+            <p>Direct partnerships with regional artisans allow us to offer authentic handcrafted pieces without excessive markups.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">🎁</div>
+            <h3>Personalized Service</h3>
+            <p>Complimentary gift wrapping, bespoke greeting notes, and tailor-made corporate hampers for every celebration.</p>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">⚡</div>
+            <h3>Fast Customer Support</h3>
+            <p>Seamless assistance via our N8N AI Chatbot, on-page query tickets, and direct WhatsApp concierge.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Customer Testimonials Section (Bonus) -->
+    <section class="section-spacing testimonials-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Loved by Customers</span>
+          <h2 class="section-title">Stories from Our Community</h2>
+          <p class="section-subtitle">Hear what our local and online shoppers have to say about the UrbanNest experience.</p>
+        </div>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-quote">"UrbanNest is my go-to boutique for birthday gifts and home scents. The wild amber soy candle fills my living room with the most calming warmth. Truly exceptional quality!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">SC</div>
+              <div class="author-info">
+                <h4>Sophia Chen</h4>
+                <p>Verified Buyer • Home Décor Enthusiast</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-quote">"I ordered 25 custom holiday gift boxes for my team. The query form workflow made the bulk order seamless, and the handwritten calligraphy notes were a huge hit!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">MR</div>
+              <div class="author-info">
+                <h4>Marcus Reynolds</h4>
+                <p>Corporate Client • Creative Director</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <p class="testimonial-quote">"The ribbed ceramic vase and linen journal arrived in pristine, plastic-free packaging. I love that I can chat with their AI assistant anytime to check new arrivals!"</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">AK</div>
+              <div class="author-info">
+                <h4>Ananya Kapoor</h4>
+                <p>Verified Buyer • Interior Stylist</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Physical Store Location & Hours Section (Bonus) -->
+    <section id="location" class="section-spacing">
+      <div class="container">
+        <div class="location-card">
+          <div class="location-info-pane">
+            <div class="store-status-badge">
+              <span class="status-dot"></span>
+              <span>Open Today: 10:00 AM – 8:30 PM</span>
+            </div>
+            <h3 style="font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 0.75rem;">Visit Our Boutique</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Experience the scents, textures, and warmth in person. Complimentary herbal tea awaits every visitor.</p>
+
+            <ul class="location-details-list">
+              <li class="location-item">
+                <span class="loc-icon">📍</span>
+                <div>
+                  <strong>Boutique Address:</strong><br />
+                  142 Heritage Boulevard, Artisan Quarter, Design District<br />
+                  <span style="font-size: 0.82rem; color: var(--text-muted);">(Opposite Central Botanical Garden, Gate #2)</span>
+                </div>
+              </li>
+              <li class="location-item">
+                <span class="loc-icon">🕒</span>
+                <div>
+                  <strong>Opening Hours:</strong><br />
+                  Mon – Sat: 10:00 AM – 8:30 PM<br />
+                  Sunday: 11:00 AM – 7:00 PM
+                </div>
+              </li>
+              <li class="location-item">
+                <span class="loc-icon">📞</span>
+                <div>
+                  <strong>Phone & WhatsApp:</strong><br />
+                  +1 (555) 382-6637 (URBAN-NEST)
+                </div>
+              </li>
+            </ul>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <a href="https://wa.me/15553826637?text=Hello%20UrbanNest!%20I%20have%20an%20inquiry%20regarding%20your%20products." target="_blank" rel="noopener" class="btn btn-olive">
+                <span>💬 WhatsApp Us</span>
+              </a>
+              <a href="#query-form" class="btn btn-secondary">
+                <span>Send a Query Form</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive Location Map Mockup -->
+          <div class="location-map-pane">
+            <div class="map-mockup-content">
+              <div class="map-pin-pulse">📍</div>
+              <h4 style="font-family: var(--font-serif); font-size: 1.4rem; margin-bottom: 0.4rem;">UrbanNest Flagship</h4>
+              <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 1.25rem;">142 Heritage Blvd • Artisan Quarter</p>
+              <span style="display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 0.35rem 0.85rem; border-radius: var(--radius-full); font-size: 0.78rem; font-weight: 700;">
+                🚗 15 Min from Downtown • Free Valet
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. N8N.io Query Form Integration Section (Mandatory Requirement) -->
+    <section id="query-form" class="section-spacing" style="background: var(--bg-secondary);">
+      <div class="container" style="max-width: 900px;">
+        <div class="section-header">
+          <span class="section-tag">Customer Interaction</span>
+          <h2 class="section-title">Submit a Customer Query</h2>
+          <p class="section-subtitle">
+            Have questions about product customization, bulk gifting, or store timings? Send your query directly to our integrated <strong>N8N.io automation workflow</strong>.
+          </p>
+        </div>
+
+        <div class="query-form-card">
+          <!-- N8N Status Banner -->
+          <div class="n8n-live-banner">
+            <div class="n8n-status-indicator">
+              <span style="font-size: 1.1rem;">⚡</span>
+              <span>N8N Workflow Integration: Active & Connected</span>
+            </div>
+            <button class="btn btn-secondary" style="padding: 0.35rem 0.85rem; font-size: 0.78rem;" id="openWebhookSettingsBtn">
+              ⚙️ Configure N8N Webhooks
+            </button>
+          </div>
+
+          <form id="n8nQueryForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="queryName">Full Name *</label>
+                <input type="text" id="queryName" placeholder="e.g. Eleanor Vance" required />
+              </div>
+
+              <div class="form-group">
+                <label for="queryEmail">Email Address *</label>
+                <input type="email" id="queryEmail" placeholder="e.g. eleanor@example.com" required />
+              </div>
+
+              <div class="form-group">
+                <label for="queryPhone">Phone Number (Optional)</label>
+                <input type="tel" id="queryPhone" placeholder="e.g. +1 (555) 019-2834" />
+              </div>
+
+              <div class="form-group">
+                <label>Query Category *</label>
+                <div class="category-selector-group">
+                  <div class="cat-pill-radio selected" data-cat-value="Product Inquiry">Product Inquiry</div>
+                  <div class="cat-pill-radio" data-cat-value="Custom Gift Box">Custom Gift Box</div>
+                  <div class="cat-pill-radio" data-cat-value="Bulk Order">Bulk / Corporate</div>
+                  <div class="cat-pill-radio" data-cat-value="Store Visit">Store Visit & Hours</div>
+                  <div class="cat-pill-radio" data-cat-value="General Support">General Support</div>
+                </div>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="queryMessage">Your Query / Message *</label>
+                <textarea id="queryMessage" rows="4" placeholder="Tell us how we can help you with your order, custom hamper curation, or store visit..." required></textarea>
+              </div>
+            </div>
+
+            <button type="submit" id="querySubmitBtn" class="btn btn-primary" style="width: 100%; padding: 0.9rem;">
+              <span>Submit Query via N8N →</span>
+            </button>
+          </form>
+
+          <!-- Result & Transmitted Payload Inspector -->
+          <div id="queryResultBox" class="query-result-box"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 10. Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.6rem;">🌿</span>
+            <h2>UrbanNest</h2>
+          </div>
+          <p>Little Things. Beautiful Living. Handcrafted lifestyle pieces that turn spaces into sanctuaries.</p>
+          <div class="n8n-badge-pill">
+            <span>⚡ Powered by N8N.io Automation</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="#catalog">All Products</a></li>
+            <li><a href="#catalog">Home Décor</a></li>
+            <li><a href="#catalog">Gift Items</a></li>
+            <li><a href="#catalog">Stationery</a></li>
+            <li><a href="#catalog">Accessories</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>About & Support</h4>
+          <ul class="footer-links">
+            <li><a href="#about">Our Story</a></li>
+            <li><a href="#why-us">Why Choose Us</a></li>
+            <li><a href="#location">Store Location</a></li>
+            <li><a href="#query-form">Submit Query</a></li>
+            <li><a href="javascript:void(0)" onclick="window.chatbot.toggleChat(true)">AI Assistant</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Store Hours & Contact</h4>
+          <p style="font-size: 0.85rem; line-height: 1.6; margin-bottom: 0.75rem;">
+            142 Heritage Blvd, Design District<br />
+            Mon – Sat: 10am – 8:30pm<br />
+            Sun: 11am – 7:00pm
+          </p>
+          <p style="font-size: 0.85rem; color: #f7ebd9;">
+            📞 +1 (555) 382-6637<br />
+            ✉️ hello@urbannest-lifestyle.com
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 UrbanNest Lifestyle Store. Created for Hackathon Challenge.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="https://render.com" target="_blank" rel="noopener" style="opacity: 0.8;">Deployed on Render</a>
+          <a href="https://n8n.io" target="_blank" rel="noopener" style="opacity: 0.8;">Automated with N8N.io</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       11. FLOATING N8N AI CHATBOT WIDGET
+       ========================================================================== -->
+  <div id="chatbotWidget" class="chatbot-widget-container">
+    <!-- Floating Trigger Button -->
+    <button id="chatbotTriggerBtn" class="chatbot-trigger-btn" title="Chat with UrbanNest AI Assistant" aria-label="Open Chatbot">
+      <span>💬</span>
+      <span class="chat-pulse-badge"></span>
+    </button>
+
+    <!-- Chat Window Container -->
+    <div id="chatbotWindow" class="chatbot-window">
+      <!-- Chat Header -->
+      <div class="chatbot-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar">🌿</div>
+          <div class="chat-header-text">
+            <h4>UrbanNest AI Assistant</h4>
+            <span>● Online • N8N Integrated</span>
+          </div>
+        </div>
+        <button id="chatbotCloseBtn" style="color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+      </div>
+
+      <!-- Messages Body -->
+      <div id="chatBody" class="chat-body">
+        <div class="chat-msg bot">
+          <div class="chat-bubble">
+            Hello! 👋 Welcome to **UrbanNest Lifestyle Store** ("Little Things. Beautiful Living."). How can I assist your home & living today?
+          </div>
+          <span class="chat-timestamp">Just now</span>
+        </div>
+      </div>
+
+      <!-- Preset Quick Question Chips -->
+      <div class="chat-suggestions">
+        <button class="chip-btn">Store timings?</button>
+        <button class="chip-btn">Where are you located?</button>
+        <button class="chip-btn">Do you provide delivery?</button>
+        <button class="chip-btn">What products do you sell?</button>
+        <button class="chip-btn">How can I contact you?</button>
+        <button class="chip-btn">How do I submit a query?</button>
+      </div>
+
+      <!-- Chat Footer / Input -->
+      <div class="chat-footer">
+        <input type="text" id="chatInput" placeholder="Ask anything about UrbanNest..." />
+        <button id="chatSendBtn" class="chat-send-btn" aria-label="Send Message">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       12. SHOPPING CART OVERLAY & DRAWER
+       ========================================================================== -->
+  <div id="cartOverlay" class="cart-overlay"></div>
+  <div id="cartDrawer" class="cart-drawer">
+    <div class="cart-header">
+      <h3>Your Shopping Bag</h3>
+      <button id="cartCloseBtn" class="modal-close-btn">✕</button>
+    </div>
+
+    <div id="cartBody" class="cart-body">
+      <!-- Rendered dynamically by cart.js -->
+    </div>
+
+    <div class="cart-footer">
+      <div class="promo-input-row">
+        <input type="text" id="promoCodeInput" placeholder="Promo code (e.g. URBAN10)" />
+        <button id="applyPromoBtn" class="btn btn-secondary" style="padding: 0.55rem 1rem; font-size: 0.85rem;">Apply</button>
+      </div>
+
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+
+      <div id="cartDiscountRow" class="cart-summary-row" style="display: none; color: var(--success);">
+        <span>Discount</span>
+        <span id="cartDiscountVal">-$0.00</span>
+      </div>
+
+      <div class="cart-summary-row">
+        <span>Estimated Delivery</span>
+        <span id="cartShipping">$0.00</span>
+      </div>
+
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+
+      <button id="checkoutBtn" class="btn btn-primary" style="width: 100%;">
+        <span>Proceed to Checkout →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       13. MODALS (Quick View, Recommender, Checkout, Webhook Settings)
+       ========================================================================== -->
+
+  <!-- Product Quick View Modal -->
+  <div id="quickViewModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 720px;">
+      <button class="modal-close-btn">✕</button>
+      <div id="quickViewModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Simulated Checkout Modal -->
+  <div id="checkoutModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 500px;">
+      <button class="modal-close-btn">✕</button>
+      <div id="checkoutModalBody"></div>
+    </div>
+  </div>
+
+  <!-- AI Gift Recommender Quiz Modal -->
+  <div id="aiRecommenderModal" class="modal-overlay">
+    <div class="modal-content">
+      <button id="closeQuizBtn" class="modal-close-btn">✕</button>
+      <div id="quizStepContainer"></div>
+    </div>
+  </div>
+
+  <!-- N8N Webhook Configuration Modal -->
+  <div id="webhookConfigModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 550px;">
+      <button class="modal-close-btn">✕</button>
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.3rem;">⚡</div>
+        <h3 style="font-family: var(--font-serif); font-size: 1.5rem;">N8N.io Webhook Settings</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          You can provide custom live N8N webhook URLs to test against your own active N8N instance, or leave empty to use our simulated server proxy!
+        </p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label for="cfgQueryWebhook">N8N Query Form Webhook URL:</label>
+          <input type="url" id="cfgQueryWebhook" placeholder="https://your-n8n-instance.app.n8n.cloud/webhook/urbannest-query" />
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; display: block;">Import <code>n8n-workflows/query-form-workflow.json</code> to get your URL</span>
+        </div>
+
+        <div class="form-group">
+          <label for="cfgChatWebhook">N8N Chatbot Webhook URL:</label>
+          <input type="url" id="cfgChatWebhook" placeholder="https://your-n8n-instance.app.n8n.cloud/webhook/urbannest-chat" />
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; display: block;">Import <code>n8n-workflows/ai-chatbot-workflow.json</code> to get your URL</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="document.getElementById('webhookConfigModal').classList.remove('active')">Cancel</button>
+        <button id="saveWebhookSettingsBtn" class="btn btn-primary" style="flex: 1.2;">Save Endpoints</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Quick Button -->
+  <a href="https://wa.me/15553826637?text=Hello%20UrbanNest!%20I%20have%20an%20inquiry%20regarding%20your%20products." target="_blank" rel="noopener" class="whatsapp-float-btn" title="Chat on WhatsApp" aria-label="WhatsApp Support">
+    💬
+  </a>
+
+  <!-- JavaScript Application Modules -->
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/query-form.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/recommender.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

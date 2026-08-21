@@ -1,0 +1,62 @@
+{
+  "name": "UrbanNest AI Chatbot Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "urbannest-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [220, 300],
+      "webhookId": "urbannest-chat-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = ($json.body.chatInput || $json.body.message || '').toLowerCase();\nlet reply = '';\n\nif (input.includes('timing') || input.includes('hour') || input.includes('open')) {\n  reply = '🕒 **UrbanNest Store Hours:** Mon–Sat 10:00 AM – 8:30 PM, Sun 11:00 AM – 7:00 PM. Our web store is open 24/7!';\n} else if (input.includes('locate') || input.includes('address') || input.includes('where')) {\n  reply = '📍 **Store Location:** 142 Heritage Boulevard, Artisan Quarter, Design District (Opposite Central Botanical Garden Gate #2).';\n} else if (input.includes('product') || input.includes('sell') || input.includes('category')) {\n  reply = '✨ **Our Collections:** Handcrafted Home Décor, Bespoke Gift Items, Artisan Stationery, Lifestyle Accessories, and Small Household Goods.';\n} else if (input.includes('deliver') || input.includes('ship')) {\n  reply = '🚚 **Delivery:** Same-day local express delivery is available! Free shipping across the city on orders over $35.';\n} else if (input.includes('contact') || input.includes('call') || input.includes('phone')) {\n  reply = '📞 **Reach Us:** Phone +1 (555) 382-6637 or WhatsApp us anytime using the button on screen!';\n} else if (input.includes('query') || input.includes('form')) {\n  reply = '📋 **Submit Query:** You can submit custom gift box or bulk order queries directly using our on-page Query Form!';\n} else {\n  reply = '🌿 Thank you for reaching out to UrbanNest AI Assistant! We are delighted to assist you with home styling, store timings, and custom gifts.';\n}\n\nreturn [{ json: { output: reply, timestamp: new Date().toISOString() } }];"
+      },
+      "name": "FAQ Router & AI Processing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"output\": \"{{ $json.output }}\",\n  \"status\": \"success\",\n  \"source\": \"UrbanNest n8n AI Agent\"\n}",
+        "options": {}
+      },
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [660, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "FAQ Router & AI Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FAQ Router & AI Processing": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
