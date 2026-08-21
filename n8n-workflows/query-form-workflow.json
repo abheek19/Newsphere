@@ -1,54 +1,52 @@
 {
-  "name": "UrbanNest Query Form Automation",
+  "name": "Little Joys - Query Form Automation with Email Confirmation",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "urbannest-query",
+        "path": "littlejoys-query",
         "responseMode": "responseNode",
         "options": {}
       },
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [240, 300],
-      "webhookId": "urbannest-query-webhook"
+      "position": [220, 300],
+      "webhookId": "littlejoys-query-webhook"
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "status",
-              "value": "received"
-            },
-            {
-              "name": "processedAt",
-              "value": "={{ $now.toISO() }}"
-            },
-            {
-              "name": "priority",
-              "value": "={{ $json.body.query_category === 'Bulk Order' ? 'URGENT' : 'STANDARD' }}"
-            }
-          ]
-        },
-        "options": {}
+        "jsCode": "const body = $json.body || $json;\n\nconst ticketId = body.ticket_id || ('LJ-' + Date.now());\nconst customerName = body.customer_name || body.name || 'Valued Customer';\nconst customerEmail = body.customer_email || body.email || '';\nconst customerPhone = body.customer_phone || body.phone || 'N/A';\nconst category = body.query_category || body.category || 'General Inquiry';\nconst message = body.message || '';\nconst priority = category === 'Bulk Order' ? 'URGENT' : 'STANDARD';\nconst timestamp = body.timestamp || new Date().toISOString();\n\nreturn [{\n  json: {\n    ticket_id: ticketId,\n    customer_name: customerName,\n    customer_email: customerEmail,\n    customer_phone: customerPhone,\n    query_category: category,\n    message: message,\n    priority: priority,\n    timestamp: timestamp,\n    status: 'received'\n  }\n}];"
       },
       "name": "Process Query Data",
-      "type": "n8n-nodes-base.set",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [460, 300]
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "hello@littlejoys.com",
+        "toEmail": "={{ $json.customer_email }}",
+        "subject": "=🌿 We've Received Your Query - Little Joys (Ticket: {{ $json.ticket_id }})",
+        "text": "=Hello {{ $json.customer_name }},\n\nThank you for reaching out to Little Joys (\"Little Things Big Joys!\").\n\nWe have received your query regarding: {{ $json.query_category }}\nTicket ID: {{ $json.ticket_id }}\nYour Message: {{ $json.message }}\nPriority: {{ $json.priority }}\n\nOur customer care team will review your inquiry and get back to you within 1 business hour.\n\nWarm regards,\nLittle Joys Concierge Team\n142 Heritage Boulevard, Artisan Quarter",
+        "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #fbf9f5; border: 1px solid #e8decb; border-radius: 16px;\">\n  <div style=\"text-align: center; margin-bottom: 24px;\">\n    <h1 style=\"color: #3b261b; font-size: 26px; margin: 0;\">🌿 Little Joys</h1>\n    <p style=\"color: #8d8278; font-size: 14px; margin: 4px 0 0; font-style: italic;\">Little Things Big Joys!</p>\n  </div>\n\n  <div style=\"background-color: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #eee5d8; box-shadow: 0 4px 12px rgba(0,0,0,0.03);\">\n    <h2 style=\"color: #231f1c; font-size: 18px; margin-top: 0;\">Thank you, {{ $json.customer_name }}! 👋</h2>\n    <p style=\"color: #5e554d; line-height: 1.6; font-size: 14px;\">\n      We have received your query and logged ticket <strong>{{ $json.ticket_id }}</strong> in our customer system.\n    </p>\n\n    <table style=\"width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px;\">\n      <tr style=\"border-bottom: 1px solid #f2ede4;\">\n        <td style=\"padding: 10px 0; color: #8d8278; width: 35%;\">Ticket ID:</td>\n        <td style=\"padding: 10px 0; color: #c86446; font-weight: bold;\">{{ $json.ticket_id }}</td>\n      </tr>\n      <tr style=\"border-bottom: 1px solid #f2ede4;\">\n        <td style=\"padding: 10px 0; color: #8d8278;\">Category:</td>\n        <td style=\"padding: 10px 0; color: #231f1c; font-weight: 600;\">{{ $json.query_category }}</td>\n      </tr>\n      <tr style=\"border-bottom: 1px solid #f2ede4;\">\n        <td style=\"padding: 10px 0; color: #8d8278;\">Priority:</td>\n        <td style=\"padding: 10px 0; color: #4f6d57; font-weight: 600;\">{{ $json.priority }}</td>\n      </tr>\n      <tr style=\"border-bottom: 1px solid #f2ede4;\">\n        <td style=\"padding: 10px 0; color: #8d8278;\">Your Note:</td>\n        <td style=\"padding: 10px 0; color: #5e554d;\">{{ $json.message }}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 10px 0; color: #8d8278;\">Estimated Reply:</td>\n        <td style=\"padding: 10px 0; color: #2e7d32; font-weight: bold;\">Within 1 business hour</td>\n      </tr>\n    </table>\n  </div>\n\n  <div style=\"text-align: center; margin-top: 24px; color: #8d8278; font-size: 12px;\">\n    <p style=\"margin: 0;\">📍 142 Heritage Boulevard, Artisan Quarter, Design District</p>\n    <p style=\"margin: 4px 0 0;\">📞 +1 (555) 382-6637 • ✉️ hello@littlejoys-lifestyle.com</p>\n  </div>\n</div>",
+        "options": {}
+      },
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [660, 300]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Query successfully processed by UrbanNest N8N Automation Pipeline!\",\n  \"ticket_id\": \"{{ $json.body.ticket_id }}\",\n  \"assigned_agent\": \"UrbanNest Customer Concierge\",\n  \"estimated_response_time\": \"Within 1 business hour\"\n}",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Query received and confirmation email dispatched to {{ $json.customer_email }}!\",\n  \"ticket_id\": \"{{ $json.ticket_id }}\",\n  \"customer_name\": \"{{ $json.customer_name }}\",\n  \"customer_email\": \"{{ $json.customer_email }}\",\n  \"assigned_agent\": \"Little Joys Customer Concierge\",\n  \"estimated_response_time\": \"Within 1 business hour\"\n}",
         "options": {}
       },
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [680, 300]
+      "position": [880, 300]
     }
   ],
   "connections": {
@@ -64,6 +62,17 @@
       ]
     },
     "Process Query Data": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation Email": {
       "main": [
         [
           {

@@ -62,13 +62,15 @@ class QueryFormManager {
       submitBtn.innerHTML = `<span>⏳ Submitting to N8N Workflow...</span>`;
     }
 
+    const currentWebhook = localStorage.getItem('littlejoys_query_webhook') || localStorage.getItem('urbannest_query_webhook') || this.webhookUrl || '';
+
     const payload = {
       name,
       email,
       phone,
       category,
       message,
-      webhookUrl: this.webhookUrl
+      webhookUrl: currentWebhook
     };
 
     try {

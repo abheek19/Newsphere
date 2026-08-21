@@ -153,8 +153,8 @@ class AppManager {
 
     if (openBtn && modal) {
       openBtn.addEventListener('click', () => {
-        if (queryInput) queryInput.value = localStorage.getItem('urbannest_query_webhook') || '';
-        if (chatInput) chatInput.value = localStorage.getItem('urbannest_chat_webhook') || '';
+        if (queryInput) queryInput.value = localStorage.getItem('littlejoys_query_webhook') || localStorage.getItem('urbannest_query_webhook') || '';
+        if (chatInput) chatInput.value = localStorage.getItem('littlejoys_chat_webhook') || localStorage.getItem('urbannest_chat_webhook') || '';
         modal.classList.add('active');
       });
     }
@@ -164,6 +164,8 @@ class AppManager {
         const qUrl = queryInput ? queryInput.value.trim() : '';
         const cUrl = chatInput ? chatInput.value.trim() : '';
 
+        localStorage.setItem('littlejoys_query_webhook', qUrl);
+        localStorage.setItem('littlejoys_chat_webhook', cUrl);
         localStorage.setItem('urbannest_query_webhook', qUrl);
         localStorage.setItem('urbannest_chat_webhook', cUrl);
 
