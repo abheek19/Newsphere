@@ -1,5 +1,5 @@
 /**
- * UrbanNest Lifestyle Store - Node.js Server
+ * Little Joys - Node.js Server
  * Alternative Express runner for Render or Node.js runtime environments.
  */
 
@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
-    service: 'UrbanNest Lifestyle Node Server',
+    service: 'Little Joys Node Server',
     n8n_integration: 'active',
     timestamp: new Date().toISOString()
   });
@@ -27,7 +27,7 @@ app.get('/api/health', (req, res) => {
 // N8N Query Form Proxy
 app.post('/api/n8n/query', async (req, res) => {
   const { name, email, phone, category, message, webhookUrl } = req.body;
-  const ticketId = `UN-${Date.now()}`;
+  const ticketId = `LJ-${Date.now()}`;
   let forwarded = false;
   let n8nResponse = null;
 
@@ -44,7 +44,7 @@ app.post('/api/n8n/query', async (req, res) => {
           customer_phone: phone,
           query_category: category,
           message,
-          source: 'UrbanNest Lifestyle Web Portal'
+          source: 'Little Joys Web Portal'
         })
       });
       n8nResponse = await resp.text();
@@ -67,7 +67,7 @@ app.post('/api/n8n/query', async (req, res) => {
 // N8N AI Chatbot Proxy
 app.post('/api/n8n/chat', async (req, res) => {
   const { message, sessionId, webhookUrl } = req.body;
-  let reply = "Hello from UrbanNest Lifestyle! How may we assist your home & living today?";
+  let reply = "Hello from Little Joys! Little Things Big Joys! How may we assist your home & living today?";
   let forwarded = false;
 
   if (webhookUrl && (webhookUrl.startsWith('http://') || webhookUrl.startsWith('https://'))) {
@@ -99,5 +99,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🌿 UrbanNest Lifestyle Node Server running on http://localhost:${PORT}`);
+  console.log(`🌿 Little Joys Node Server running on http://localhost:${PORT}`);
 });

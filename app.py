@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UrbanNest Lifestyle Store - Production Server
+Little Joys - Production Server
 Serves static frontend assets and provides proxy endpoints for N8N.io Webhook integrations.
 Compatible with local execution and Render cloud deployment.
 """
@@ -23,19 +23,19 @@ mimetypes.add_type("application/javascript", ".js")
 mimetypes.add_type("image/svg+xml", ".svg")
 mimetypes.add_type("application/json", ".json")
 
-# Built-in intelligent AI Chatbot response engine for UrbanNest
+# Built-in intelligent AI Chatbot response engine for Little Joys
 FAQ_KNOWLEDGE_BASE = [
     {
         "keywords": ["timing", "time", "hour", "open", "close", "when"],
-        "reply": "🕒 **UrbanNest Store Hours:**\n• **Monday – Saturday:** 10:00 AM – 8:30 PM\n• **Sunday:** 11:00 AM – 7:00 PM\n• *Online orders and query support are active 24/7!*"
+        "reply": "🕒 **Little Joys Store Hours:**\n• **Monday – Saturday:** 10:00 AM – 8:30 PM\n• **Sunday:** 11:00 AM – 7:00 PM\n• *Online orders and query support are active 24/7!*"
     },
     {
         "keywords": ["locate", "location", "address", "where", "store", "visit", "directions", "city"],
-        "reply": "📍 **UrbanNest Physical Boutique:**\n• **Address:** 142 Heritage Boulevard, Artisan Quarter, Design District\n• **Landmark:** Opposite Central Botanical Garden, Gate #2\n• **Contact:** +1 (555) 382-6637 (URBAN-NEST)\n\nWe would love to welcome you in person for complimentary herbal tea while you browse!"
+        "reply": "📍 **Little Joys Physical Boutique:**\n• **Address:** 142 Heritage Boulevard, Artisan Quarter, Design District\n• **Landmark:** Opposite Central Botanical Garden, Gate #2\n• **Contact:** +1 (555) 382-6637 (LITTLE-JOYS)\n\nWe would love to welcome you in person for complimentary herbal tea while you browse!"
     },
     {
         "keywords": ["product", "sell", "category", "catalogue", "catalog", "item", "stock", "collection"],
-        "reply": "✨ **UrbanNest Collections:**\nWe specialize in curated, handcrafted lifestyle essentials across 5 categories:\n1. 🌿 **Home Décor** — Ceramic vases, scented soy candles, artisan mirrors\n2. 🎁 **Gift Items** — Custom gift boxes, brass bookmarks, curated bundles\n3. ✍️ **Aesthetic Stationery** — Linen notebooks, bamboo fountain pens, desk pads\n4. 👜 **Lifestyle Accessories** — Organic tote bags, vegan leather cardholders\n5. ☕ **Small Household Essentials** — Teak wood coasters, ceramic mug sets\n\nCheck out our catalog section above to browse and add items to your cart!"
+        "reply": "✨ **Little Joys Collections:**\nWe specialize in curated, handcrafted lifestyle essentials across 5 categories:\n1. 🌿 **Home Décor** — Ceramic vases, scented soy candles, artisan mirrors\n2. 🎁 **Gift Items** — Custom gift boxes, brass bookmarks, curated bundles\n3. ✍️ **Aesthetic Stationery** — Linen notebooks, bamboo fountain pens, desk pads\n4. 👜 **Lifestyle Accessories** — Organic tote bags, vegan leather cardholders\n5. ☕ **Small Household Essentials** — Teak wood coasters, ceramic mug sets\n\nCheck out our catalog section above to browse and add items to your cart!"
     },
     {
         "keywords": ["deliver", "delivery", "ship", "shipping", "courier", "fast"],
@@ -43,7 +43,7 @@ FAQ_KNOWLEDGE_BASE = [
     },
     {
         "keywords": ["contact", "call", "email", "phone", "whatsapp", "reach", "support"],
-        "reply": "📞 **Get in Touch with UrbanNest:**\n• **Email:** hello@urbannest-lifestyle.com\n• **Phone:** +1 (555) 382-6637\n• **WhatsApp Direct:** Click the green WhatsApp button on the bottom bar\n• **Query Form:** Use the form right below to send us a prioritized inquiry!"
+        "reply": "📞 **Get in Touch with Little Joys:**\n• **Email:** hello@littlejoys-lifestyle.com\n• **Phone:** +1 (555) 382-6637\n• **WhatsApp Direct:** Click the green WhatsApp button on the bottom bar\n• **Query Form:** Use the form right below to send us a prioritized inquiry!"
     },
     {
         "keywords": ["query", "form", "submit", "custom", "bulk", "order", "corporate"],
@@ -67,13 +67,13 @@ def generate_ai_reply(user_message):
             
     # Default lifestyle-aware response
     return (
-        f"Thank you for reaching out to **UrbanNest Lifestyle Assistant**! ✨\n\n"
-        f"I'm here to assist you with our handcrafted home décor, store timings, bespoke gift curation, and delivery information. "
+        f"Thank you for reaching out to **Little Joys AI Assistant**! ✨\n\n"
+        f"Little Things Big Joys! I'm here to assist you with our handcrafted home décor, store timings, bespoke gift curation, and delivery information. "
         f"You can also use our **Query Form** below for specialized inquiries, or click any of the quick suggestions!"
     )
 
 
-class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
+class LittleJoysHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=PUBLIC_DIR, **kwargs)
 
@@ -96,7 +96,7 @@ class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             response = {
                 "status": "healthy",
-                "service": "UrbanNest Lifestyle Web Server",
+                "service": "Little Joys Web Server",
                 "n8n_integration": "active",
                 "timestamp": datetime.utcnow().isoformat() + "Z"
             }
@@ -127,7 +127,7 @@ class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
             message = payload.get("message", "")
             
             timestamp = datetime.utcnow().isoformat() + "Z"
-            ticket_id = f"UN-{int(datetime.utcnow().timestamp())}"
+            ticket_id = f"LJ-{int(datetime.utcnow().timestamp())}"
             
             forwarded_to_n8n = False
             n8n_response_data = None
@@ -143,13 +143,13 @@ class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
                         "customer_phone": phone,
                         "query_category": category,
                         "message": message,
-                        "source": "UrbanNest Lifestyle Web Portal"
+                        "source": "Little Joys Web Portal"
                     }).encode("utf-8")
                     
                     req = urllib.request.Request(
                         webhook_url,
                         data=req_payload,
-                        headers={"Content-Type": "application/json", "User-Agent": "UrbanNest-N8N-Client/1.0"}
+                        headers={"Content-Type": "application/json", "User-Agent": "LittleJoys-N8N-Client/1.0"}
                     )
                     with urllib.request.urlopen(req, timeout=5) as resp:
                         forwarded_to_n8n = True
@@ -180,7 +180,7 @@ class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
                     "category": category,
                     "message": message
                 },
-                "confirmation": f"Thank you {name}! Your query regarding '{category}' has been logged (ID: {ticket_id}) and forwarded to the UrbanNest management pipeline."
+                "confirmation": f"Thank you {name}! Your query regarding '{category}' has been logged (ID: {ticket_id}) and forwarded to the Little Joys management pipeline."
             }
             self.wfile.write(json.dumps(response, indent=2).encode("utf-8"))
             return
@@ -209,7 +209,7 @@ class UrbanNestHandler(http.server.SimpleHTTPRequestHandler):
                     req = urllib.request.Request(
                         webhook_url,
                         data=req_payload,
-                        headers={"Content-Type": "application/json", "User-Agent": "UrbanNest-Chatbot-Client/1.0"}
+                        headers={"Content-Type": "application/json", "User-Agent": "LittleJoys-Chatbot-Client/1.0"}
                     )
                     with urllib.request.urlopen(req, timeout=5) as resp:
                         resp_body = resp.read().decode("utf-8")
@@ -254,9 +254,9 @@ def run_server():
     # Allow socket reuse to prevent port binding conflicts
     socketserver.TCPServer.allow_reuse_address = True
     
-    with socketserver.TCPServer(("", PORT), UrbanNestHandler) as httpd:
+    with socketserver.TCPServer(("", PORT), LittleJoysHandler) as httpd:
         print(f"============================================================")
-        print(f"🌿 UrbanNest Lifestyle Store - Server Running!")
+        print(f"🌿 Little Joys - Server Running! Little Things Big Joys!")
         print(f"🔗 Local URL: http://localhost:{PORT}")
         print(f"📂 Public Assets: {PUBLIC_DIR}")
         print(f"⚡ N8N Query Form Proxy: http://localhost:{PORT}/api/n8n/query")
@@ -265,7 +265,7 @@ def run_server():
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\nShutting down UrbanNest server gracefully.")
+            print("\nShutting down Little Joys server gracefully.")
             httpd.server_close()
 
 

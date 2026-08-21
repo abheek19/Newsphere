@@ -230,7 +230,7 @@ class CartManager {
     modalBody.innerHTML = `
       <div style="text-align: center; margin-bottom: 1.5rem;">
         <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🌿</div>
-        <h3 style="font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700;">UrbanNest Order Summary</h3>
+        <h3 style="font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700;">Little Joys Order Summary</h3>
         <p style="color: var(--text-muted); font-size: 0.88rem;">Review your artisanal order before completing simulated checkout.</p>
       </div>
 
@@ -285,7 +285,7 @@ class CartManager {
     this.render();
 
     document.getElementById('checkoutModal')?.classList.remove('active');
-    window.showToast('🎉 Order placed successfully! Thank you for supporting UrbanNest.', 'success');
+    window.showToast('🎉 Order placed successfully! Thank you for supporting Little Joys.', 'success');
   }
 }
 

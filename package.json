@@ -1,21 +1,21 @@
 {
-  "name": "urbannest-lifestyle-store",
+  "name": "little-joys-lifestyle-store",
   "version": "1.0.0",
-  "description": "UrbanNest Lifestyle Store - Modern Digital Presence with N8N Integrations & AI Chatbot",
+  "description": "Little Joys - Little Things Big Joys! Modern Digital Presence with N8N Integrations & AI Chatbot",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
   "keywords": [
-    "urbannest",
+    "little-joys",
     "lifestyle",
     "ecommerce",
     "n8n",
     "ai-chatbot",
     "render-deployment"
   ],
-  "author": "UrbanNest Team",
+  "author": "Little Joys Team",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",

@@ -90,7 +90,7 @@ class ChatbotManager {
     indicator.className = 'chat-msg bot';
     indicator.innerHTML = `
       <div class="chat-bubble" style="background: var(--bg-card); font-style: italic; color: var(--text-muted);">
-        UrbanNest AI is thinking<span class="typing-indicator"></span>
+        Little Joys AI is thinking<span class="typing-indicator"></span>
       </div>
     `;
     this.chatBody.appendChild(indicator);

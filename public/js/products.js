@@ -1,5 +1,5 @@
 /**
- * UrbanNest Lifestyle Store - Products Data & Catalog Manager
+ * Little Joys - Products Data & Catalog Manager
  */
 
 const PRODUCTS_DATA = [
@@ -60,7 +60,7 @@ const PRODUCTS_DATA = [
   // 2. Gift Items
   {
     id: 'un-gi-01',
-    name: 'The UrbanNest Botanica Gift Hamper',
+    name: 'The Little Joys Botanica Gift Hamper',
     category: 'gift-items',
     categoryName: 'Gift Items',
     price: 68.00,
