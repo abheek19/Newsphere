@@ -123,22 +123,22 @@ class NewsRenderer {
     return filtered;
   }
 
-  // Render Breaking Ticker
+  // Render Breaking Ticker (Continuous Seamless Loop)
   renderTicker() {
     const tickerTrack = document.getElementById('tickerTrack');
     if (!tickerTrack) return;
 
-    const all = window.NewsSync.getAllArticles().slice(0, 10);
+    const all = window.NewsSync.getAllArticles().slice(0, 12);
     if (all.length === 0) {
       tickerTrack.innerHTML = `<span class="ticker-item">Live Google Sheet News Wire Connected</span>`;
       return;
     }
 
-    const itemsHtml = all.map(a => {
+    const renderGroup = (list) => list.map(a => {
       const url = this.getArticleUrl(a);
       return `
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="ticker-item" title="Open ${this.escapeHtml(a.Headline)}">
-          <span class="ticker-tag">${a.Category || 'HEADLINE'}</span>
+          <span class="ticker-tag">${this.escapeHtml(a.Category || 'HEADLINE')}</span>
           <span class="ticker-text">${this.escapeHtml(a.Headline)}</span>
           <span class="ticker-author">by ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
           <span class="ticker-link-hint">↗</span>
@@ -146,7 +146,12 @@ class NewsRenderer {
       `;
     }).join(' <span class="ticker-sep">✦</span> ');
 
-    tickerTrack.innerHTML = itemsHtml + ' <span class="ticker-sep">✦</span> ' + itemsHtml;
+    const groupHtml = renderGroup(all);
+    tickerTrack.innerHTML = `
+      <div class="ticker-group">${groupHtml}</div>
+      <span class="ticker-sep">✦</span>
+      <div class="ticker-group">${groupHtml}</div>
+    `;
   }
 
   // Render Category Navigation Pills

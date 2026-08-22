@@ -326,12 +326,15 @@ img {
   gap: 0.75rem;
 }
 
-/* /* Breaking Ticker */
+/* ==========================================================================
+   Breaking News Ticker (Smooth Hardware-Accelerated Marquee)
+   ========================================================================== */
+
 .breaking-ticker-bar {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   overflow: hidden;
-  height: 42px;
+  height: 44px;
   display: flex;
   align-items: center;
 }
@@ -339,7 +342,7 @@ img {
 .ticker-flex-wrapper {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   width: 100%;
   height: 100%;
 }
@@ -347,49 +350,61 @@ img {
 .ticker-lead-badge {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   background: var(--brand-primary);
   color: #ffffff;
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.85rem;
   border-radius: var(--radius-sm);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+  z-index: 5;
 }
 
 .ticker-marquee-track, .ticker-scroll-container {
   overflow: hidden;
-  white-space: nowrap;
   position: relative;
   flex: 1;
-  mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(to right, transparent, black 25px, black calc(100% - 25px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 25px, black calc(100% - 25px), transparent);
 }
 
 .ticker-items-inner, .ticker-track {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  white-space: nowrap;
-  animation: ticker-scroll 35s linear infinite;
+  width: max-content;
+  will-change: transform;
+  animation: ticker-scroll 45s linear infinite;
 }
 
 .ticker-items-inner:hover, .ticker-track:hover {
   animation-play-state: paused;
 }
 
+.ticker-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .ticker-item {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-right: 2rem;
+  gap: 0.55rem;
   font-family: var(--font-card-body);
   font-size: 0.95rem;
   color: var(--text-primary);
   cursor: pointer;
   text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
   transition: color var(--transition-fast);
 }
 
@@ -398,28 +413,35 @@ img {
 }
 
 .ticker-tag {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--brand-primary);
   background: var(--bg-accent-subtle);
-  padding: 0.1rem 0.4rem;
+  padding: 0.15rem 0.45rem;
   border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.ticker-text {
+  font-weight: 500;
 }
 
 .ticker-sep {
-  color: var(--text-muted);
-  opacity: 0.5;
+  color: var(--brand-primary);
+  opacity: 0.6;
   margin: 0 0.5rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
 }
 
 .ticker-author {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .ticker-link-hint {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--brand-primary);
 }
 
