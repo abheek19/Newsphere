@@ -5,16 +5,21 @@
 
 class NewsSyncEngine {
   constructor() {
-    this.storageKey = 'newssphere_google_sheet_articles_v3';
-    this.configKey = 'newssphere_sync_config_v3';
+    this.storageKey = 'newssphere_google_sheet_articles_v6';
+    this.configKey = 'newssphere_sync_config_v6';
     this.defaultSheetUrl = 'https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/export?format=csv';
 
-    // Clear any obsolete old version caches
+    // Clear all previous version caches to eliminate any wrong/stale mappings
     try {
       localStorage.removeItem('newssphere_custom_articles_v1');
       localStorage.removeItem('newssphere_google_sheet_articles_v2');
+      localStorage.removeItem('newssphere_google_sheet_articles_v3');
+      localStorage.removeItem('newssphere_google_sheet_articles_v4');
+      localStorage.removeItem('newssphere_google_sheet_articles_v5');
       localStorage.removeItem('newssphere_bookmarks_v1');
       localStorage.removeItem('newssphere_bookmarks_v2');
+      localStorage.removeItem('newssphere_bookmarks_v3');
+      localStorage.removeItem('newssphere_bookmarks_v4');
     } catch (e) {}
   }
 
@@ -185,15 +190,28 @@ class NewsSyncEngine {
 
     const headers = lines[0].map(h => h.toLowerCase().replace(/[^a-z0-9]/g, ''));
     
+    // Strict exact matching first, then fallback
     const findIndex = (aliases) => {
-      return headers.findIndex(h => aliases.some(alias => h === alias || h.includes(alias)));
+      // 1. Exact match
+      for (let i = 0; i < headers.length; i++) {
+        if (aliases.includes(headers[i])) return i;
+      }
+      // 2. Non-ambiguous contains match (excluding imageurl from generic url alias)
+      for (let i = 0; i < headers.length; i++) {
+        for (const a of aliases) {
+          if (headers[i].includes(a) && (a !== 'url' || headers[i] !== 'imageurl')) {
+            return i;
+          }
+        }
+      }
+      return -1;
     };
 
-    const headlineIdx = findIndex(['headline', 'title']);
-    const imageIdx = findIndex(['imageurl', 'image', 'imgurl']);
-    const authorIdx = findIndex(['author', 'writer', 'byline']);
-    const urlIdx = findIndex(['articleurl', 'link', 'url']);
-    const categoryIdx = findIndex(['category', 'section']);
+    const headlineIdx = findIndex(['headline', 'title', 'articletitle']);
+    const imageIdx = findIndex(['imageurl', 'imgurl', 'image', 'photo']);
+    const authorIdx = findIndex(['author', 'writer', 'byline', 'reporter']);
+    const urlIdx = findIndex(['articleurl', 'articlelink', 'sourceurl', 'link', 'weburl']);
+    const categoryIdx = findIndex(['category', 'section', 'topic']);
 
     if (headlineIdx === -1) {
       throw new Error('Google Sheet is missing required "Headline" column header.');
@@ -205,10 +223,10 @@ class NewsSyncEngine {
       if (!row || row.length === 0) continue;
 
       let headline = row[headlineIdx] || '';
-      // Strip HTML tags like <strong> and decode entities
       headline = headline.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#039;/g, "'").replace(/&quot;/g, '"').trim();
       if (!headline || headline.length < 3) continue;
 
+      // Extract high quality image from image column
       let imageUrl = (imageIdx !== -1 && row[imageIdx]) ? this.extractHighQualityImageUrl(row[imageIdx]) : '';
       if (!imageUrl || (!imageUrl.startsWith('http') && !imageUrl.startsWith('//'))) {
         imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80';
@@ -219,7 +237,23 @@ class NewsSyncEngine {
         author = 'The Hindu Bureau';
       }
 
-      let articleUrl = (urlIdx !== -1 && row[urlIdx]) ? row[urlIdx].trim() : '#';
+      // Extract genuine article URL from article column (guaranteeing it is not an image file)
+      let articleUrl = (urlIdx !== -1 && row[urlIdx]) ? row[urlIdx].trim() : '';
+      
+      // Safety: If urlIdx accidentally resolved to an image URL, scan the row for the thehindu.com article link
+      if (!articleUrl || (articleUrl.includes('th-i.thgim.com') && (articleUrl.endsWith('.jpg') || articleUrl.endsWith('.JPG') || articleUrl.endsWith('.png')))) {
+        for (const cell of row) {
+          if (cell && cell.startsWith('http') && (cell.includes('/article') || cell.includes('thehindu.com')) && !cell.endsWith('.jpg') && !cell.endsWith('.JPG')) {
+            articleUrl = cell.trim();
+            break;
+          }
+        }
+      }
+
+      if (!articleUrl) {
+        articleUrl = 'https://www.thehindu.com/';
+      }
+
       let category = (categoryIdx !== -1 && row[categoryIdx]) ? row[categoryIdx].trim() : '';
       if (!category) {
         category = this.classifyCategory(headline, articleUrl);
@@ -235,7 +269,7 @@ class NewsSyncEngine {
         Date: "2026-08-22",
         ReadTime: `${Math.max(2, Math.min(8, Math.round(headline.length / 14)))} min read`,
         Summary: headline,
-        Source: 'Google Sheet / The Hindu'
+        Source: 'The Hindu / Google Sheet'
       });
     }
 
@@ -264,17 +298,15 @@ class NewsSyncEngine {
     const csvUrl = this.normalizeGoogleSheetUrl(sheetUrl);
     let csvData = null;
 
-    // Try direct fetch
     try {
       const directResp = await fetch(csvUrl, { cache: 'no-store' });
       if (directResp.ok) {
         csvData = await directResp.text();
       }
     } catch (e) {
-      console.info('Direct fetch CORS restricted, using server proxy endpoint...');
+      console.info('Direct fetch restricted, using server proxy...');
     }
 
-    // Proxy fallback
     if (!csvData) {
       const proxyResp = await fetch(`/api/sync/sheet?url=${encodeURIComponent(csvUrl)}`);
       if (!proxyResp.ok) {
