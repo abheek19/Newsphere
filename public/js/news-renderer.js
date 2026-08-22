@@ -1,6 +1,6 @@
 /**
  * NewsRenderer - Handles UI rendering, Category grouping, Card views, Reader Modal, Bookmarks, and Interactions.
- * Every article element links directly to the actual external Article URL on the original website.
+ * Ensures 100% reliable direct navigation to original article URLs in all browsers (Safari, Chrome, Firefox).
  */
 
 class NewsRenderer {
@@ -9,7 +9,7 @@ class NewsRenderer {
     this.searchQuery = '';
     this.sortBy = 'latest'; // 'latest' | 'author' | 'headline'
     this.currentViewMode = 'magazine'; // 'magazine' | 'categories' | 'compact'
-    this.bookmarksKey = 'newssphere_bookmarks_v3';
+    this.bookmarksKey = 'newssphere_bookmarks_v4';
     this.speechUtterance = null;
     this.isSpeaking = false;
 
@@ -24,9 +24,41 @@ class NewsRenderer {
       'Lifestyle & Food': { label: 'Lifestyle & Culture', icon: '🍽️', color: '#16a34a' },
       'General News': { label: 'Special Dispatches', icon: '📌', color: '#475569' }
     };
+
+    // Attach global click delegation for card backgrounds
+    this.initGlobalCardClickDelegation();
   }
 
-  // Open original article directly in a new tab
+  // Helper to safely get the full valid article URL
+  getArticleUrl(article) {
+    if (!article) return '#';
+    let url = article['Article URL'] || article.articleUrl || article.url || article.link || '#';
+    url = String(url).trim();
+    if (!url || url === '#') return '#';
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url.replace(/^\/\//, '');
+    }
+    return url;
+  }
+
+  // Global click delegation so clicking any card background also navigates to article URL
+  initGlobalCardClickDelegation() {
+    document.addEventListener('click', (e) => {
+      // Don't trigger if clicked on an anchor, bookmark button, reader button, or modal controls
+      if (e.target.closest('a, button, input, textarea, select, .bookmark-btn, .tts-btn, .modal-close-btn, .delete-bookmark-btn')) {
+        return;
+      }
+      const card = e.target.closest('.news-card, .hero-primary-card, .trending-card-item, .compact-news-row, .ticker-item');
+      if (card) {
+        const url = card.getAttribute('data-article-url');
+        if (url && url !== '#') {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      }
+    });
+  }
+
+  // Open original article directly
   openArticleUrl(url) {
     if (!url || url === '#') {
       this.showToast('Article URL not available', 'error');
@@ -126,14 +158,17 @@ class NewsRenderer {
       return;
     }
 
-    const itemsHtml = all.map(a => `
-      <div class="ticker-item" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(a['Article URL'])}')">
-        <span class="ticker-tag">${a.Category || 'HEADLINE'}</span>
-        <span class="ticker-text">${this.escapeHtml(a.Headline)}</span>
-        <span class="ticker-author">by ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
-        <span class="ticker-link-hint">↗</span>
-      </div>
-    `).join(' <span class="ticker-sep">✦</span> ');
+    const itemsHtml = all.map(a => {
+      const url = this.getArticleUrl(a);
+      return `
+        <a href="${url}" target="_blank" rel="noopener noreferrer" class="ticker-item" data-article-url="${url}">
+          <span class="ticker-tag">${a.Category || 'HEADLINE'}</span>
+          <span class="ticker-text">${this.escapeHtml(a.Headline)}</span>
+          <span class="ticker-author">by ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
+          <span class="ticker-link-hint">↗</span>
+        </a>
+      `;
+    }).join(' <span class="ticker-sep">✦</span> ');
 
     tickerTrack.innerHTML = itemsHtml + ' <span class="ticker-sep">✦</span> ' + itemsHtml;
   }
@@ -220,11 +255,12 @@ class NewsRenderer {
     const featured = articles[0];
     const topPicks = articles.slice(1, 4);
     const rest = articles.slice(4);
+    const featuredUrl = this.getArticleUrl(featured);
 
     let html = `
       <section class="editorial-hero-section">
-        <div class="hero-primary-card" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(featured['Article URL'])}')">
-          <div class="hero-image-wrap">
+        <div class="hero-primary-card" data-article-url="${featuredUrl}">
+          <a href="${featuredUrl}" target="_blank" rel="noopener noreferrer" class="hero-image-wrap" title="Read full article on original website">
             <img src="${this.escapeHtml(featured['Image URL'])}" 
                  alt="${this.escapeHtml(featured.Headline)}"
                  onerror="window.NewsUI.handleImageFallback(this, '${featured.Category}')"
@@ -235,15 +271,14 @@ class NewsRenderer {
               </span>
               <span class="badge-read">${featured.ReadTime || '3 min'}</span>
             </div>
-          </div>
+          </a>
           <div class="hero-content">
-            <span class="hero-kicker">🔥 Top Story • Click to Read Article</span>
+            <span class="hero-kicker">🔥 Top Story</span>
             <h2 class="hero-headline">
-              <a href="${this.escapeHtml(featured['Article URL'])}" 
+              <a href="${featuredUrl}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
                  class="headline-link" 
-                 onclick="event.stopPropagation();" 
                  title="Open article on actual website">
                 ${this.escapeHtml(featured.Headline)}
               </a>
@@ -255,11 +290,11 @@ class NewsRenderer {
                 <span class="article-date">Google Sheet Verified Source</span>
               </div>
             </div>
-            <div class="hero-action-bar" onclick="event.stopPropagation()">
-              <a href="${this.escapeHtml(featured['Article URL'])}" 
+            <div class="hero-action-bar">
+              <a href="${featuredUrl}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
-                 class="btn btn-sm btn-primary">
+                 class="btn btn-sm btn-primary read-article-btn">
                 Read Full Article ↗
               </a>
               <button class="btn btn-sm btn-outline" onclick="window.NewsUI.openReaderModal('${featured.id}')" title="Quick Voice & Preview Reader">
@@ -287,7 +322,7 @@ class NewsRenderer {
 
       <div class="section-divider">
         <h3 class="section-title">📰 Complete Coverage Dispatches (${articles.length} Stories)</h3>
-        <span class="section-subtitle">Click any headline or image to open the actual news article</span>
+        <span class="section-subtitle">Click any headline, image, or button to open the actual news article</span>
       </div>
 
       <div class="news-cards-grid">
@@ -378,15 +413,19 @@ class NewsRenderer {
     `;
   }
 
-  // Card HTML - Clicking card, image, headline, or button opens actual article URL
+  // Card HTML - Every headline, image, and CTA has a direct valid href
   renderCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
-    const articleUrl = this.escapeHtml(article['Article URL']);
+    const articleUrl = this.getArticleUrl(article);
 
     return `
-      <article class="news-card" data-id="${article.id}" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
-        <div class="card-image-wrap">
+      <article class="news-card" data-id="${article.id}" data-article-url="${articleUrl}">
+        <a href="${articleUrl}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="card-image-wrap" 
+           title="Open original article in new tab">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
@@ -395,7 +434,7 @@ class NewsRenderer {
             <span class="badge-category" style="background:${catColor}">${article.Category || 'News'}</span>
             <span class="badge-read">${article.ReadTime || '3 min'}</span>
           </div>
-        </div>
+        </a>
 
         <div class="card-body">
           <h4 class="card-title">
@@ -403,8 +442,7 @@ class NewsRenderer {
                target="_blank" 
                rel="noopener noreferrer" 
                class="headline-link"
-               onclick="event.stopPropagation();"
-               title="Open full article on publisher site">
+               title="${this.escapeHtml(article.Headline)}">
               ${this.highlightQuery(article.Headline)}
             </a>
           </h4>
@@ -418,13 +456,13 @@ class NewsRenderer {
               </div>
             </div>
 
-            <div class="card-actions" onclick="event.stopPropagation()">
+            <div class="card-actions">
               <a href="${articleUrl}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
-                 class="btn-icon external-link-btn" 
+                 class="btn btn-sm btn-primary read-article-btn" 
                  title="Open Original Article Link (New Tab)">
-                ↗
+                Read ↗
               </a>
               <button class="btn-icon" 
                       title="Quick Voice & Preview Reader" 
@@ -452,16 +490,16 @@ class NewsRenderer {
   renderCompactCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
-    const articleUrl = this.escapeHtml(article['Article URL']);
+    const articleUrl = this.getArticleUrl(article);
 
     return `
-      <article class="compact-news-row" data-id="${article.id}" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
-        <div class="compact-thumb">
+      <article class="compact-news-row" data-id="${article.id}" data-article-url="${articleUrl}">
+        <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="compact-thumb" title="Open original article">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </div>
+        </a>
         <div class="compact-body">
           <div class="compact-meta">
             <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
@@ -470,15 +508,15 @@ class NewsRenderer {
             <span class="compact-read">${article.ReadTime || '3 min'}</span>
           </div>
           <h4 class="compact-title">
-            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link" onclick="event.stopPropagation()">
+            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link">
               ${this.highlightQuery(article.Headline)}
             </a>
           </h4>
           <span class="compact-author">By <strong>${this.highlightQuery(article.Author || 'The Hindu Bureau')}</strong></span>
         </div>
-        <div class="compact-actions" onclick="event.stopPropagation()">
-          <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Open original article link">
-            ↗
+        <div class="compact-actions">
+          <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary" title="Open original article link">
+            Read ↗
           </a>
           <button class="btn-icon ${isSaved ? 'bookmarked' : ''}" onclick="window.NewsUI.toggleBookmark('${article.id}')">
             ${isSaved ? '★' : '☆'}
@@ -491,22 +529,22 @@ class NewsRenderer {
   // Trending Card HTML
   renderTrendingCardHtml(article) {
     const catColor = this.getCategoryColor(article.Category);
-    const articleUrl = this.escapeHtml(article['Article URL']);
+    const articleUrl = this.getArticleUrl(article);
 
     return `
-      <div class="trending-card-item" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
-        <div class="trending-img-wrap">
+      <div class="trending-card-item" data-article-url="${articleUrl}">
+        <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="trending-img-wrap" title="Open story">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </div>
+        </a>
         <div class="trending-content">
           <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
             ${article.Category || 'Trending'}
           </span>
           <h4 class="trending-title">
-            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link" onclick="event.stopPropagation()">
+            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link">
               ${this.escapeHtml(article.Headline)}
             </a>
           </h4>
@@ -534,21 +572,26 @@ class NewsRenderer {
       return;
     }
 
-    container.innerHTML = bookmarks.map(a => `
-      <div class="bookmark-item-row" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(a['Article URL'])}')">
-        <img src="${this.escapeHtml(a['Image URL'])}" onerror="window.NewsUI.handleImageFallback(this, '${a.Category}')">
-        <div class="bookmark-item-info">
-          <span class="badge-category-mini">${a.Category || 'News'}</span>
-          <h5>${this.escapeHtml(a.Headline)}</h5>
-          <span class="bookmark-byline">By ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
+    container.innerHTML = bookmarks.map(a => {
+      const url = this.getArticleUrl(a);
+      return `
+        <div class="bookmark-item-row" data-article-url="${url}">
+          <a href="${url}" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; gap:0.85rem; flex:1; text-decoration:none; color:inherit;">
+            <img src="${this.escapeHtml(a['Image URL'])}" onerror="window.NewsUI.handleImageFallback(this, '${a.Category}')">
+            <div class="bookmark-item-info">
+              <span class="badge-category-mini">${a.Category || 'News'}</span>
+              <h5>${this.escapeHtml(a.Headline)}</h5>
+              <span class="bookmark-byline">By ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
+            </div>
+          </a>
+          <button class="btn-icon delete-bookmark-btn" 
+                  title="Remove" 
+                  onclick="event.stopPropagation(); window.NewsUI.toggleBookmark('${a.id}')">
+            ✕
+          </button>
         </div>
-        <button class="btn-icon delete-bookmark-btn" 
-                title="Remove" 
-                onclick="event.stopPropagation(); window.NewsUI.toggleBookmark('${a.id}')">
-          ✕
-        </button>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   // Reader Modal
@@ -563,7 +606,7 @@ class NewsRenderer {
 
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
-    const articleUrl = this.escapeHtml(article['Article URL']);
+    const articleUrl = this.getArticleUrl(article);
 
     this.stopSpeech();
 
@@ -584,7 +627,7 @@ class NewsRenderer {
           <div class="author-avatar reader-avatar-lg">${this.getAuthorInitials(article.Author)}</div>
           <div>
             <div class="reader-author-name">By <strong>${this.escapeHtml(article.Author || 'The Hindu Bureau')}</strong></div>
-            <div class="reader-source-tag">Source: <a href="${articleUrl}" target="_blank" style="color:var(--brand-primary); text-decoration:underline;">${this.escapeHtml(article.Source || 'The Hindu')} ↗</a></div>
+            <div class="reader-source-tag">Source: <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--brand-primary); text-decoration:underline;">${this.escapeHtml(article.Source || 'The Hindu')} ↗</a></div>
           </div>
           
           <div class="reader-controls">
@@ -700,7 +743,7 @@ class NewsRenderer {
     const article = all.find(a => a.id === articleId);
     if (!article) return;
 
-    const url = article['Article URL'] || window.location.href;
+    const url = this.getArticleUrl(article);
     if (navigator.share) {
       try {
         await navigator.share({ title: article.Headline, url });

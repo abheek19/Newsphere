@@ -239,6 +239,9 @@
   text-decoration: none;
   transition: color var(--transition-fast);
   display: block;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
 }
 
 .headline-link:hover {
@@ -264,6 +267,14 @@
   margin-top: auto;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border-color);
+  position: relative;
+  z-index: 10;
+}
+
+.read-article-btn {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
 }
 
 /* Trending Column */
