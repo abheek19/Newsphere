@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Little Joys - Production Server
-Serves static frontend assets and provides proxy endpoints for N8N.io Webhook integrations.
-Compatible with local execution and Render cloud deployment.
+NewsSphere / Apex Chronicle - Python Production Server
+Serves static assets, provides REST API endpoints, Google Sheets CSV proxy, and N8N webhook receiver.
 """
 
 import http.server
@@ -10,75 +9,43 @@ import socketserver
 import os
 import json
 import urllib.request
+import urllib.parse
 import urllib.error
 import mimetypes
+import re
 from datetime import datetime
 
 PORT = int(os.environ.get("PORT", 3000))
 PUBLIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 
-# Ensure proper mime types
+# Mime types
 mimetypes.add_type("text/css", ".css")
 mimetypes.add_type("application/javascript", ".js")
 mimetypes.add_type("image/svg+xml", ".svg")
 mimetypes.add_type("application/json", ".json")
 
-# Built-in intelligent AI Chatbot response engine for Little Joys
-FAQ_KNOWLEDGE_BASE = [
-    {
-        "keywords": ["timing", "time", "hour", "open", "close", "when"],
-        "reply": "🕒 **Little Joys Store Hours:**\n• **Monday – Saturday:** 10:00 AM – 8:30 PM\n• **Sunday:** 11:00 AM – 7:00 PM\n• *Online orders and query support are active 24/7!*"
-    },
-    {
-        "keywords": ["locate", "location", "address", "where", "store", "visit", "directions", "city"],
-        "reply": "📍 **Little Joys Physical Boutique:**\n• **Address:** 142 Heritage Boulevard, Artisan Quarter, Design District\n• **Landmark:** Opposite Central Botanical Garden, Gate #2\n• **Contact:** +1 (555) 382-6637 (LITTLE-JOYS)\n\nWe would love to welcome you in person for complimentary herbal tea while you browse!"
-    },
-    {
-        "keywords": ["product", "sell", "category", "catalogue", "catalog", "item", "stock", "collection"],
-        "reply": "✨ **Little Joys Collections:**\nWe specialize in curated, handcrafted lifestyle essentials across 5 categories:\n1. 🌿 **Home Décor** — Ceramic vases, scented soy candles, artisan mirrors\n2. 🎁 **Gift Items** — Custom gift boxes, brass bookmarks, curated bundles\n3. ✍️ **Aesthetic Stationery** — Linen notebooks, bamboo fountain pens, desk pads\n4. 👜 **Lifestyle Accessories** — Organic tote bags, vegan leather cardholders\n5. ☕ **Small Household Essentials** — Teak wood coasters, ceramic mug sets\n\nCheck out our catalog section above to browse and add items to your cart!"
-    },
-    {
-        "keywords": ["deliver", "delivery", "ship", "shipping", "courier", "fast"],
-        "reply": "🚚 **Delivery & Shipping Policy:**\n• **Local Same-Day Express:** Free for orders above $50 (within city limits)\n• **Standard Domestic Shipping:** 2–4 business days ($4.99 or FREE above $35)\n• **Eco-Friendly Packaging:** 100% recyclable, plastic-free biodegradable packaging."
-    },
-    {
-        "keywords": ["contact", "call", "email", "phone", "whatsapp", "reach", "support"],
-        "reply": "📞 **Get in Touch with Little Joys:**\n• **Email:** hello@littlejoys-lifestyle.com\n• **Phone:** +1 (555) 382-6637\n• **WhatsApp Direct:** Click the green WhatsApp button on the bottom bar\n• **Query Form:** Use the form right below to send us a prioritized inquiry!"
-    },
-    {
-        "keywords": ["query", "form", "submit", "custom", "bulk", "order", "corporate"],
-        "reply": "📋 **Submitting a Query:**\nYou can submit an inquiry directly via the **'Submit a Query'** form on this page! We support:\n• Custom Gift Hamper curation\n• Bulk & Corporate gifting\n• Interior styling consultation\n• Order tracking\n\nOur team connects this form directly to our **N8N Automation Flow** for rapid 1-hour response!"
-    },
-    {
-        "keywords": ["discount", "coupon", "offer", "promo", "code", "sale"],
-        "reply": "🎉 **Special Hackathon & Welcome Offers:**\n• Use code **`URBAN10`** for **10% OFF** your entire order!\n• Use code **`WELCOME20`** on orders above $50 for **20% OFF**!\n• Free gift wrapping included on all gift bundle orders."
-    },
-    {
-        "keywords": ["return", "exchange", "refund", "warranty"],
-        "reply": "🌿 **Hassle-Free Return Policy:**\nWe offer a 14-day 'No Questions Asked' return and exchange guarantee on all unused products in original packaging."
-    }
-]
+# In-memory news cache
+NEWS_DATABASE = []
 
-def generate_ai_reply(user_message):
-    msg_lower = user_message.lower().strip()
-    for entry in FAQ_KNOWLEDGE_BASE:
-        if any(kw in msg_lower for kw in entry["keywords"]):
-            return entry["reply"]
-            
-    # Default lifestyle-aware response
-    return (
-        f"Thank you for reaching out to **Little Joys AI Assistant**! ✨\n\n"
-        f"Little Things Big Joys! I'm here to assist you with our handcrafted home décor, store timings, bespoke gift curation, and delivery information. "
-        f"You can also use our **Query Form** below for specialized inquiries, or click any of the quick suggestions!"
-    )
+def load_default_articles():
+    global NEWS_DATABASE
+    json_path = os.path.join(PUBLIC_DIR, "data", "news-default.json")
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                NEWS_DATABASE = json.load(f)
+                print(f"[Python Server] Successfully loaded {len(NEWS_DATABASE)} default news articles.")
+        except Exception as e:
+            print(f"[Python Server] Failed to load {json_path}: {e}")
+
+load_default_articles()
 
 
-class LittleJoysHandler(http.server.SimpleHTTPRequestHandler):
+class NewsSphereHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=PUBLIC_DIR, **kwargs)
 
     def end_headers(self):
-        # Enable CORS for hackathon evaluation and local testing
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -90,184 +57,146 @@ class LittleJoysHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path == "/api/health":
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        query = urllib.parse.parse_qs(parsed.query)
+
+        # Healthcheck
+        if path == "/api/health":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            response = {
+            self.wfile.write(json.dumps({
                 "status": "healthy",
-                "service": "Little Joys Web Server",
-                "n8n_integration": "active",
+                "service": "NewsSphere Python Server",
+                "total_articles": len(NEWS_DATABASE),
                 "timestamp": datetime.utcnow().isoformat() + "Z"
-            }
-            self.wfile.write(json.dumps(response).encode("utf-8"))
+            }).encode("utf-8"))
             return
 
-        # Fallback to standard static file serving
-        return super().do_GET()
+        # News REST API
+        if path == "/api/news":
+            category = query.get("category", ["all"])[0]
+            search_query = query.get("q", [""])[0].lower().strip()
+            
+            results = list(NEWS_DATABASE)
+            if category and category != "all":
+                results = [a for a in results if category.lower() in a.get("Category", "").lower()]
+            
+            if search_query:
+                results = [
+                    a for a in results if (
+                        search_query in a.get("Headline", "").lower() or
+                        search_query in a.get("Author", "").lower() or
+                        search_query in a.get("Category", "").lower()
+                    )
+                ]
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "success": True,
+                "total": len(results),
+                "articles": results
+            }).encode("utf-8"))
+            return
+
+        # Google Sheets Proxy
+        if path == "/api/sync/sheet":
+            sheet_url = query.get("url", [""])[0]
+            if not sheet_url:
+                self.send_response(400)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "Missing 'url' parameter"}).encode("utf-8"))
+                return
+
+            try:
+                req = urllib.request.Request(
+                    sheet_url,
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    csv_data = response.read().decode("utf-8", errors="replace")
+                
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "success": True,
+                    "url": sheet_url,
+                    "csv": csv_data
+                }).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": f"Failed to fetch Google Sheet: {str(e)}"}).encode("utf-8"))
+                return
+
+        # Static assets
+        super().do_GET()
 
     def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+
         content_length = int(self.headers.get("Content-Length", 0))
-        post_data = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else "{}"
-        
-        try:
-            payload = json.loads(post_data)
-        except Exception:
-            payload = {}
+        body = self.rfile.read(content_length).decode("utf-8") if content_length > 0 else ""
 
-        # -------------------------------------------------------------
-        # Endpoint 1: N8N Query Form Submission Proxy
-        # -------------------------------------------------------------
-        if self.path == "/api/n8n/query":
-            webhook_url = payload.get("webhookUrl", "").strip()
-            name = payload.get("name", "Valued Customer")
-            email = payload.get("email", "")
-            phone = payload.get("phone", "")
-            category = payload.get("category", "General Query")
-            message = payload.get("message", "")
-            
-            timestamp = datetime.utcnow().isoformat() + "Z"
-            ticket_id = f"LJ-{int(datetime.utcnow().timestamp())}"
-            
-            forwarded_to_n8n = False
-            n8n_response_data = None
-            
-            # If user provided a live N8N webhook URL, forward payload
-            if webhook_url and (webhook_url.startswith("http://") or webhook_url.startswith("https://")):
-                try:
-                    req_payload = json.dumps({
-                        "ticket_id": ticket_id,
-                        "timestamp": timestamp,
-                        "customer_name": name,
-                        "customer_email": email,
-                        "customer_phone": phone,
-                        "query_category": category,
-                        "message": message,
-                        "source": "Little Joys Web Portal"
-                    }).encode("utf-8")
-                    
-                    req = urllib.request.Request(
-                        webhook_url,
-                        data=req_payload,
-                        headers={"Content-Type": "application/json", "User-Agent": "LittleJoys-N8N-Client/1.0"}
-                    )
-                    with urllib.request.urlopen(req, timeout=5) as resp:
-                        forwarded_to_n8n = True
-                        resp_body = resp.read().decode("utf-8")
-                        try:
-                            n8n_response_data = json.loads(resp_body)
-                        except Exception:
-                            n8n_response_data = resp_body
-                except Exception as e:
-                    print(f"[N8N Query Proxy Warning] Webhook forward error: {e}")
-                    forwarded_to_n8n = False
+        # N8N Inbound Webhook
+        if path == "/api/webhook/news":
+            try:
+                payload = json.loads(body) if body else {}
+                items = payload if isinstance(payload, list) else payload.get("articles", [payload])
+                added = 0
+                for item in items:
+                    obj = item.get("json", item)
+                    if obj.get("Headline") or obj.get("headline"):
+                        NEWS_DATABASE.insert(0, {
+                            "id": f"webhook-{int(datetime.utcnow().timestamp())}-{added}",
+                            "Headline": obj.get("Headline") or obj.get("headline"),
+                            "Image URL": obj.get("Image URL") or obj.get("imageUrl") or "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80",
+                            "Author": obj.get("Author") or obj.get("author") or "N8N News Desk",
+                            "Article URL": obj.get("Article URL") or obj.get("articleUrl") or "#",
+                            "Category": obj.get("Category") or obj.get("category") or "General News",
+                            "Date": obj.get("Date") or datetime.utcnow().strftime("%Y-%m-%d"),
+                            "Summary": obj.get("Summary") or obj.get("Headline") or "",
+                            "Source": "N8N Webhook"
+                        })
+                        added += 1
 
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            
-            response = {
-                "success": True,
-                "ticket_id": ticket_id,
-                "timestamp": timestamp,
-                "forwarded_to_n8n": forwarded_to_n8n,
-                "webhook_target": webhook_url if webhook_url else "Integrated Default N8N Workflow Simulator",
-                "n8n_response": n8n_response_data,
-                "submitted_data": {
-                    "name": name,
-                    "email": email,
-                    "phone": phone,
-                    "category": category,
-                    "message": message
-                },
-                "confirmation": f"Thank you {name}! Your query regarding '{category}' has been logged (ID: {ticket_id}) and forwarded to the Little Joys management pipeline."
-            }
-            self.wfile.write(json.dumps(response, indent=2).encode("utf-8"))
-            return
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "success": True,
+                    "added": added,
+                    "total": len(NEWS_DATABASE)
+                }).encode("utf-8"))
+                return
+            except Exception as e:
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                return
 
-        # -------------------------------------------------------------
-        # Endpoint 2: N8N AI Chatbot Webhook Proxy / Intelligent Engine
-        # -------------------------------------------------------------
-        elif self.path == "/api/n8n/chat":
-            webhook_url = payload.get("webhookUrl", "").strip()
-            user_msg = payload.get("message", "").strip()
-            session_id = payload.get("sessionId", "guest-session")
-            
-            forwarded_to_n8n = False
-            bot_reply = ""
-            
-            # If a custom N8N chatbot webhook is active, attempt direct forwarding
-            if webhook_url and (webhook_url.startswith("http://") or webhook_url.startswith("https://")):
-                try:
-                    req_payload = json.dumps({
-                        "sessionId": session_id,
-                        "chatInput": user_msg,
-                        "message": user_msg,
-                        "timestamp": datetime.utcnow().isoformat() + "Z"
-                    }).encode("utf-8")
-                    
-                    req = urllib.request.Request(
-                        webhook_url,
-                        data=req_payload,
-                        headers={"Content-Type": "application/json", "User-Agent": "LittleJoys-Chatbot-Client/1.0"}
-                    )
-                    with urllib.request.urlopen(req, timeout=5) as resp:
-                        resp_body = resp.read().decode("utf-8")
-                        try:
-                            n8n_data = json.loads(resp_body)
-                            # Support common n8n AI agent output structures
-                            bot_reply = n8n_data.get("output") or n8n_data.get("response") or n8n_data.get("message") or str(n8n_data)
-                        except Exception:
-                            bot_reply = resp_body
-                        forwarded_to_n8n = True
-                except Exception as e:
-                    print(f"[N8N Chat Proxy Warning] Webhook forward error: {e}")
-                    bot_reply = generate_ai_reply(user_msg)
-            else:
-                # Built-in contextual AI responses
-                bot_reply = generate_ai_reply(user_msg)
-
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            
-            response = {
-                "success": True,
-                "reply": bot_reply,
-                "forwarded_to_n8n": forwarded_to_n8n,
-                "timestamp": datetime.utcnow().strftime("%I:%M %p")
-            }
-            self.wfile.write(json.dumps(response).encode("utf-8"))
-            return
-
-        # 404 for undefined POST routes
         self.send_response(404)
-        self.send_header("Content-Type", "application/json")
         self.end_headers()
-        self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
 
 
 def run_server():
-    # Make sure public directory exists
-    os.makedirs(PUBLIC_DIR, exist_ok=True)
-    
-    # Allow socket reuse to prevent port binding conflicts
     socketserver.TCPServer.allow_reuse_address = True
-    
-    with socketserver.TCPServer(("", PORT), LittleJoysHandler) as httpd:
-        print(f"============================================================")
-        print(f"🌿 Little Joys - Server Running! Little Things Big Joys!")
-        print(f"🔗 Local URL: http://localhost:{PORT}")
-        print(f"📂 Public Assets: {PUBLIC_DIR}")
-        print(f"⚡ N8N Query Form Proxy: http://localhost:{PORT}/api/n8n/query")
-        print(f"🤖 N8N AI Chatbot Proxy: http://localhost:{PORT}/api/n8n/chat")
-        print(f"============================================================")
+    with socketserver.TCPServer(("", PORT), NewsSphereHandler) as httpd:
+        print(f"🌐 NewsSphere Python Server running on port {PORT}")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print("\nShutting down Little Joys server gracefully.")
+            print("\nShutting down server.")
             httpd.server_close()
-
 
 if __name__ == "__main__":
     run_server()

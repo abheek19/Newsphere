@@ -1,0 +1,174 @@
+{
+  "name": "NewsSphere - Scraper & Google Sheet Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "11111111-1111-1111-1111-111111111111",
+      "name": "Schedule Trigger (Hourly)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "trigger-news-scrape",
+        "options": {}
+      },
+      "id": "22222222-2222-2222-2222-222222222222",
+      "name": "Webhook Manual Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://apnews.com/",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "33333333-3333-3333-3333-333333333333",
+      "name": "HTTP Request - Fetch Source HTML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        480,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input: HTTP Request node output with raw HTML in `data`\nconst html = $input.first().json.data || $input.first().json.body || '';\n\nconst results = [];\nconst seenUrls = new Set();\n\n// Matches: <h3 class=\"title...\">\\n <a href=\"URL\">HEADLINE</a>\\n</h3>\nconst titleRegex = /<h3 class=\"title[^\"]*\">\\s*<a href=\"([^\"]+)\">\\s*([\\s\\S]*?)\\s*<\\/a>\\s*<\\/h3>/g;\n\nlet match;\nwhile ((match = titleRegex.exec(html)) !== null) {\n  const articleUrl = match[1].replace(/&amp;/g, '&');\n  const headline = match[2].replace(/\\s+/g, ' ').trim();\n\n  if (!headline || seenUrls.has(articleUrl)) continue; // skip empty/dupe\n  seenUrls.add(articleUrl);\n\n  // Look at a window of HTML *before* this headline to find its image + author\n  const windowStart = Math.max(0, match.index - 3000);\n  const context = html.slice(windowStart, match.index);\n\n  // Image: last <img ... data-original=\"...\"> before the headline\n  const imgMatches = [...context.matchAll(/data-original=\"([^\"]+)\"/g)];\n  const imageUrl = imgMatches.length ? imgMatches[imgMatches.length - 1][1].replace(/&amp;/g, '&') : 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80';\n\n  // Author: last <a class=\"person-name...\">NAME</a> before the headline\n  const authorMatches = [...context.matchAll(/class=\"person-name[^\"]*\"[^>]*>\\s*([^<]+?)\\s*<\\/a>/g)];\n  const author = authorMatches.length ? authorMatches[authorMatches.length - 1][1].trim() : 'News Desk Correspondent';\n\n  // Auto Category Classifier\n  const lowerH = headline.toLowerCase();\n  let category = 'General News';\n  if (/\\b(parliament|senate|congress|court|election|bill|minister|law)\\b/i.test(lowerH)) category = 'Political: National';\n  else if (/\\b(un|summit|treaty|foreign|global|diplomacy|border)\\b/i.test(lowerH)) category = 'Political: International';\n  else if (/\\b(match|cup|championship|goal|league|trophy|cricket|tennis|football|sports)\\b/i.test(lowerH)) category = 'Sports';\n  else if (/\\b(movie|film|grammy|oscar|song|music|actor|cinema|premiere)\\b/i.test(lowerH)) category = 'Entertainment';\n  else if (/\\b(ai|quantum|telescope|tech|space|robot|cyber|software)\\b/i.test(lowerH)) category = 'Science & Tech';\n  else if (/\\b(market|stock|bank|inflation|economy|invest|billion)\\b/i.test(lowerH)) category = 'Business & Economy';\n  else if (/\\b(climate|coral|carbon|ocean|forest|green|emissions)\\b/i.test(lowerH)) category = 'Climate & World';\n\n  results.push({\n    \"Headline\": headline,\n    \"Image URL\": imageUrl,\n    \"Author\": author,\n    \"Article URL\": articleUrl.startsWith('http') ? articleUrl : `https://apnews.com${articleUrl}`,\n    \"Category\": category,\n    \"Date\": new Date().toISOString().split('T')[0],\n    \"Source\": \"AP News Wire\"\n  });\n}\n\nreturn results.map(item => ({ json: item }));"
+      },
+      "id": "44444444-4444-4444-4444-444444444444",
+      "name": "Code - Parse HTML Regex & Fields",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData"
+        },
+        "options": {}
+      },
+      "id": "55555555-5555-5555-5555-555555555555",
+      "name": "Google Sheets - Sync Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.1,
+      "position": [
+        920,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "id": "66666666-6666-6666-6666-666666666666",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        380
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Hourly)": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Fetch Source HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Fetch Source HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Fetch Source HTML": {
+      "main": [
+        [
+          {
+            "node": "Code - Parse HTML Regex & Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Parse HTML Regex & Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - Sync Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Sync Rows": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
