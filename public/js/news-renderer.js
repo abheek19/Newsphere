@@ -214,8 +214,8 @@ class NewsRenderer {
 
     let html = `
       <section class="editorial-hero-section">
-        <div class="hero-primary-card" onclick="window.NewsUI.openReaderModal('${featured.id}')">
-          <div class="hero-image-wrap">
+        <div class="hero-primary-card">
+          <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="hero-image-wrap" title="Read full article on original website">
             <img src="${this.escapeHtml(featured['Image URL'])}" 
                  alt="${this.escapeHtml(featured.Headline)}"
                  onerror="window.NewsUI.handleImageFallback(this, '${featured.Category}')"
@@ -226,22 +226,26 @@ class NewsRenderer {
               </span>
               <span class="badge-read">${featured.ReadTime || '3 min'}</span>
             </div>
-          </div>
+          </a>
           <div class="hero-content">
             <span class="hero-kicker">🔥 Top Story</span>
-            <h2 class="hero-headline">${this.escapeHtml(featured.Headline)}</h2>
+            <h2 class="hero-headline">
+              <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link" title="Open full story">
+                ${this.escapeHtml(featured.Headline)}
+              </a>
+            </h2>
             <div class="card-byline">
               <div class="author-avatar">${this.getAuthorInitials(featured.Author)}</div>
               <div class="author-info">
                 <span class="author-name">By ${this.escapeHtml(featured.Author || 'The Hindu Bureau')}</span>
-                <span class="article-date">Published Today • ${featured.Source || 'Google Sheet Feed'}</span>
+                <span class="article-date">Google Sheet Verified Source</span>
               </div>
             </div>
-            <div class="hero-action-bar" onclick="event.stopPropagation()">
+            <div class="hero-action-bar">
               <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
-                Visit Original Article ↗
+                Read Full Article ↗
               </a>
-              <button class="btn btn-sm btn-outline" onclick="window.NewsUI.openReaderModal('${featured.id}')">
+              <button class="btn btn-sm btn-outline" onclick="window.NewsUI.openReaderModal('${featured.id}')" title="Quick Voice & Preview Reader">
                 📖 Quick Reader
               </button>
               <button class="btn-icon bookmark-btn ${this.isBookmarked(featured.id) ? 'bookmarked' : ''}" 
@@ -363,8 +367,12 @@ class NewsRenderer {
     const catColor = this.getCategoryColor(article.Category);
 
     return `
-      <article class="news-card" data-id="${article.id}" onclick="window.NewsUI.openReaderModal('${article.id}')">
-        <div class="card-image-wrap">
+      <article class="news-card" data-id="${article.id}">
+        <a href="${this.escapeHtml(article['Article URL'])}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="card-image-wrap" 
+           title="Open original article in new tab">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
@@ -373,11 +381,17 @@ class NewsRenderer {
             <span class="badge-category" style="background:${catColor}">${article.Category || 'News'}</span>
             <span class="badge-read">${article.ReadTime || '3 min'}</span>
           </div>
-        </div>
+        </a>
 
         <div class="card-body">
-          <h4 class="card-title" title="${this.escapeHtml(article.Headline)}">
-            ${this.highlightQuery(article.Headline)}
+          <h4 class="card-title">
+            <a href="${this.escapeHtml(article['Article URL'])}" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="headline-link"
+               title="${this.escapeHtml(article.Headline)}">
+              ${this.highlightQuery(article.Headline)}
+            </a>
           </h4>
 
           <div class="card-footer">
@@ -389,14 +403,19 @@ class NewsRenderer {
               </div>
             </div>
 
-            <div class="card-actions" onclick="event.stopPropagation()">
+            <div class="card-actions">
               <a href="${this.escapeHtml(article['Article URL'])}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
                  class="btn-icon external-link-btn" 
-                 title="Open Original Article Link in New Tab">
+                 title="Open Original Article Link (New Tab)">
                 ↗
               </a>
+              <button class="btn-icon" 
+                      title="Quick Voice & Preview Reader" 
+                      onclick="window.NewsUI.openReaderModal('${article.id}')">
+                📖
+              </button>
               <button class="btn-icon bookmark-btn ${isSaved ? 'bookmarked' : ''}" 
                       title="${isSaved ? 'Remove Bookmark' : 'Bookmark Article'}"
                       onclick="window.NewsUI.toggleBookmark('${article.id}')">
@@ -420,13 +439,13 @@ class NewsRenderer {
     const catColor = this.getCategoryColor(article.Category);
 
     return `
-      <article class="compact-news-row" data-id="${article.id}" onclick="window.NewsUI.openReaderModal('${article.id}')">
-        <div class="compact-thumb">
+      <article class="compact-news-row" data-id="${article.id}">
+        <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="compact-thumb" title="Open original article">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </div>
+        </a>
         <div class="compact-body">
           <div class="compact-meta">
             <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
@@ -434,10 +453,14 @@ class NewsRenderer {
             </span>
             <span class="compact-read">${article.ReadTime || '3 min'}</span>
           </div>
-          <h4 class="compact-title">${this.highlightQuery(article.Headline)}</h4>
+          <h4 class="compact-title">
+            <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link">
+              ${this.highlightQuery(article.Headline)}
+            </a>
+          </h4>
           <span class="compact-author">By <strong>${this.highlightQuery(article.Author || 'The Hindu Bureau')}</strong></span>
         </div>
-        <div class="compact-actions" onclick="event.stopPropagation()">
+        <div class="compact-actions">
           <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Original Link">
             ↗
           </a>
@@ -454,18 +477,22 @@ class NewsRenderer {
     const catColor = this.getCategoryColor(article.Category);
 
     return `
-      <div class="trending-card-item" onclick="window.NewsUI.openReaderModal('${article.id}')">
-        <div class="trending-img-wrap">
+      <div class="trending-card-item">
+        <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="trending-img-wrap" title="Open story">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </div>
+        </a>
         <div class="trending-content">
           <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
             ${article.Category || 'Trending'}
           </span>
-          <h4 class="trending-title">${this.escapeHtml(article.Headline)}</h4>
+          <h4 class="trending-title">
+            <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link">
+              ${this.escapeHtml(article.Headline)}
+            </a>
+          </h4>
           <span class="trending-author">By ${this.escapeHtml(article.Author || 'The Hindu Bureau')}</span>
         </div>
       </div>

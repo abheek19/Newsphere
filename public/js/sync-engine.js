@@ -114,6 +114,21 @@ class NewsSyncEngine {
   }
 
   /**
+   * Extract Full High-Quality Image URL from Google Sheet thumbnail URLs
+   * Replaces SQUARE_80, SQUARE_100, FREE_80, LANDSCAPE_80, etc. with crisp LANDSCAPE_1200 HD rendition.
+   */
+  extractHighQualityImageUrl(url) {
+    if (!url || typeof url !== 'string') {
+      return 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80';
+    }
+    let hq = url.trim();
+    hq = hq.replace(/\/alternates\/(SQUARE|LANDSCAPE|FREE|PORTRAIT|STATIC|RECTANGLE)_[0-9]+\//i, '/alternates/LANDSCAPE_1200/');
+    hq = hq.replace(/SQUARE_\d+/gi, 'LANDSCAPE_1200')
+           .replace(/LANDSCAPE_80/gi, 'LANDSCAPE_1200');
+    return hq;
+  }
+
+  /**
    * Parse CSV content from Google Sheets link
    */
   parseGoogleSheetCsv(csvText) {
@@ -186,7 +201,7 @@ class NewsSyncEngine {
       headline = headline.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#039;/g, "'").replace(/&quot;/g, '"').trim();
       if (!headline || headline.length < 3) continue;
 
-      let imageUrl = (imageIdx !== -1 && row[imageIdx]) ? row[imageIdx].trim() : '';
+      let imageUrl = (imageIdx !== -1 && row[imageIdx]) ? this.extractHighQualityImageUrl(row[imageIdx]) : '';
       if (!imageUrl || (!imageUrl.startsWith('http') && !imageUrl.startsWith('//'))) {
         imageUrl = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80';
       }

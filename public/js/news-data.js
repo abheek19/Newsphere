@@ -1,13 +1,12 @@
 /**
- * NewsSphere - Live Articles from Google Sheet
- * Source: https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing
+ * NewsSphere - High-Quality Articles from Google Sheet
  */
 
 const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-1",
     "Headline": "From heritage to high-rises, how Chennai grew taller",
-    "Image URL": "https://th-i.thgim.com/public/incoming/4v52q/article71375301.ece/alternates/SQUARE_80/DJI_20260101160318_0104_D.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/4v52q/article71375301.ece/alternates/LANDSCAPE_1200/DJI_20260101160318_0104_D.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/madras-day-2026-from-heritage-to-high-rises-how-chennai-grew-taller/article71369048.ece",
     "Category": "Political: National",
@@ -19,7 +18,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-2",
     "Headline": "The coast that made Chennai",
-    "Image URL": "https://th-i.thgim.com/public/incoming/4v52q/article71375301.ece/alternates/SQUARE_80/DJI_20260101160318_0104_D.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/4v52q/article71375301.ece/alternates/LANDSCAPE_1200/DJI_20260101160318_0104_D.JPG",
     "Author": "R. Aishwaryaa",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/madras-day-2026-the-coast-that-made-chennai-and-the-city-that-keeps-remaking-it/article71370834.ece",
     "Category": "Political: National",
@@ -31,7 +30,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-3",
     "Headline": "When Madras was walk-friendly",
-    "Image URL": "https://th-i.thgim.com/public/incoming/vo9yv7/article71348680.ece/alternates/SQUARE_80/HG_527_Traffic_at_Mout_Road_after_the_Film_show_14-9-80-008.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/vo9yv7/article71348680.ece/alternates/LANDSCAPE_1200/HG_527_Traffic_at_Mout_Road_after_the_Film_show_14-9-80-008.jpg",
     "Author": "Geetha Srimathi",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/madras-day-2026-when-the-city-was-walk-friendly/article71333822.ece",
     "Category": "Political: National",
@@ -43,7 +42,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-4",
     "Headline": "Safire theatre in Chennai: Once a cinema landmark, now reduced to nothing",
-    "Image URL": "https://th-i.thgim.com/public/incoming/vo9yv7/article71348680.ece/alternates/SQUARE_80/HG_527_Traffic_at_Mout_Road_after_the_Film_show_14-9-80-008.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/vo9yv7/article71348680.ece/alternates/LANDSCAPE_1200/HG_527_Traffic_at_Mout_Road_after_the_Film_show_14-9-80-008.jpg",
     "Author": "Sriram V.",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/madras-day-2026-safire-theatre-once-a-cinema-landmark-in-chennai-now-reduced-to-nothing/article71369132.ece",
     "Category": "Entertainment",
@@ -55,7 +54,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-5",
     "Headline": "Jolted about on carts drawn by oxen and horses in Madras",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3xbfoo/article71348662.ece/alternates/SQUARE_80/HP10996.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3xbfoo/article71348662.ece/alternates/LANDSCAPE_1200/HP10996.JPG",
     "Author": "Meghna M.",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/madras-day-2026-jolted-about-on-carts-drawn-by-oxen-horses-in-the-city/article71333875.ece",
     "Category": "Political: National",
@@ -67,7 +66,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-6",
     "Headline": "Art deco in Chennai: A guide to heritage structures from Dare House to Kasturi Buildings",
-    "Image URL": "https://th-i.thgim.com/public/news/national/ilj647/article71373379.ece/alternates/SQUARE_80/kasturi%20buildings.jpeg",
+    "Image URL": "https://th-i.thgim.com/public/news/national/ilj647/article71373379.ece/alternates/LANDSCAPE_1200/kasturi%20buildings.jpeg",
     "Author": "Sriram V.",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/art-deco-in-chennai-a-guide-to-heritage-structures-kasturi-buildings/article71368950.ece",
     "Category": "Political: National",
@@ -79,7 +78,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-7",
     "Headline": "Freedom markers of Chennai’s Mount Road",
-    "Image URL": "https://th-i.thgim.com/public/incoming/ihwuyy/article71363777.ece/alternates/SQUARE_80/HA9022.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/ihwuyy/article71363777.ece/alternates/LANDSCAPE_1200/HA9022.JPG",
     "Author": "Sanjana Ganesh",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/freedom-markers-of-chennais-mount-road/article71361882.ece",
     "Category": "Political: National",
@@ -91,7 +90,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-8",
     "Headline": "From page to screen: How Madras filmmakers brought literature to life",
-    "Image URL": "https://th-i.thgim.com/public/incoming/ihwuyy/article71363777.ece/alternates/SQUARE_80/HA9022.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/ihwuyy/article71363777.ece/alternates/LANDSCAPE_1200/HA9022.JPG",
     "Author": "Sriram V.",
     "Article URL": "https://www.thehindu.com/entertainment/movies/from-page-to-screen-how-madras-filmmakers-brought-literature-to-life/article71363852.ece",
     "Category": "Entertainment",
@@ -103,7 +102,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-9",
     "Headline": "Madras Day: Three actors share their favourite Chennai food memories",
-    "Image URL": "https://th-i.thgim.com/public/incoming/mc4eb3/article71359760.ece/alternates/SQUARE_80/06_Buhari_Hotel.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/mc4eb3/article71359760.ece/alternates/LANDSCAPE_1200/06_Buhari_Hotel.jpg",
     "Author": "Suganthy Krishnamachari",
     "Article URL": "https://www.thehindu.com/food/features/madras-day-three-actors-share-their-favourite-chennai-food-memories/article71359517.ece",
     "Category": "Political: National",
@@ -115,7 +114,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-10",
     "Headline": "A birthday note to Madras: The city that is shaped by its arts",
-    "Image URL": "https://th-i.thgim.com/public/incoming/mc4eb3/article71359760.ece/alternates/SQUARE_80/06_Buhari_Hotel.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/mc4eb3/article71359760.ece/alternates/LANDSCAPE_1200/06_Buhari_Hotel.jpg",
     "Author": "Chitradeepa Anantharam",
     "Article URL": "https://www.thehindu.com/entertainment/music/a-birthday-note-to-madras-the-city-that-is-shaped-by-its-arts/article71364608.ece",
     "Category": "Entertainment",
@@ -127,7 +126,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-11",
     "Headline": "Rashtrapati Bhavan withdraws email on Bangladesh PM visit",
-    "Image URL": "https://th-i.thgim.com/public/incoming/4i1ks6/article71375306.ece/alternates/SQUARE_80/Bangladesh_Election_20424.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/4i1ks6/article71375306.ece/alternates/LANDSCAPE_1200/Bangladesh_Election_20424.jpg",
     "Author": "Chitra Swaminathan",
     "Article URL": "https://www.thehindu.com/news/national/rashtrapati-bhavan-withdraws-email-on-bangladesh-pm-visit/article71374900.ece",
     "Category": "Political: National",
@@ -139,7 +138,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-12",
     "Headline": "After Congress stir, police register FIR on pellet gun use at Delhi protest",
-    "Image URL": "https://th-i.thgim.com/public/incoming/731opu/article71375286.ece/alternates/SQUARE_80/RAHUL%20PRIYANKA%20PROTEST_21_08_67.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/731opu/article71375286.ece/alternates/LANDSCAPE_1200/RAHUL%20PRIYANKA%20PROTEST_21_08_67.jpg",
     "Author": "Kallol Bhattacherjee",
     "Article URL": "https://www.thehindu.com/news/national/delhi-police-fir-over-pellet-injuries-to-youth-during-july-20-protest/article71373663.ece",
     "Category": "Political: International",
@@ -151,7 +150,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-13",
     "Headline": "Trump says Iran not ready to make the 'right deal' | LIVE",
-    "Image URL": "https://th-i.thgim.com/public/incoming/d1pwrj/article71376439.ece/alternates/SQUARE_80/2026-08-21T184843Z_2860007_RC2RXGA1DJ3Z_RTRMADP_3_UN-BUDGET-USA.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/d1pwrj/article71376439.ece/alternates/LANDSCAPE_1200/2026-08-21T184843Z_2860007_RC2RXGA1DJ3Z_RTRMADP_3_UN-BUDGET-USA.JPG",
     "Author": "Shrimansi  Kaushik",
     "Article URL": "https://www.thehindu.com/news/international/west-asia-war-donald-trump-us-iran-conflict-escalation-strait-of-hormuz-august-22-2026-live-updates/article71376440.ece",
     "Category": "Political: International",
@@ -163,7 +162,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-14",
     "Headline": "Ahead of MHA-Ladakh talks in September, Centre’s outreach sees withdrawal of cases against Leh protestors",
-    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/SQUARE_80/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/LANDSCAPE_1200/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/ladakh/ahead-of-mha-ladakh-talks-in-september-centres-outreach-sees-withdrawal-of-cases-against-leh-protestors/article71374523.ece",
     "Category": "Political: National",
@@ -175,7 +174,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-15",
     "Headline": "Ukraine says 'cynical' Russian strike on shopping centre killed 16",
-    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/SQUARE_80/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/LANDSCAPE_1200/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
     "Author": "Peerzada Ashiq",
     "Article URL": "https://www.thehindu.com/news/international/several-killed-injured-russia-drone-strike-in-ukraine-shopping-centre-updates/article71376414.ece",
     "Category": "Political: International",
@@ -187,7 +186,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-16",
     "Headline": "Champat Rai’s article on Nripendra Misra’s role in Ayodhya temple construction sparks controversy",
-    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/SQUARE_80/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/LANDSCAPE_1200/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
     "Author": "AFP",
     "Article URL": "https://www.thehindu.com/news/national/uttar-pradesh/champat-rais-article-on-nripendra-misras-role-in-ayodhya-temple-construction-sparks-controversy/article71374103.ece",
     "Category": "Political: National",
@@ -199,7 +198,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-17",
     "Headline": "Cannot live like this, says West Bengal man detained again in ‘illegal immigrants’ drive",
-    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/SQUARE_80/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/j3l362/article71376432.ece/alternates/LANDSCAPE_1200/12205_26_9_2025_13_29_25_1_01_CURFEW_LEH_26_09_2025.JPG",
     "Author": "Ishita Mishra",
     "Article URL": "https://www.thehindu.com/news/cities/bangalore/cannot-live-like-this-says-west-bengal-man-detained-again-in-illegal-immigrants-drive/article71374196.ece",
     "Category": "Political: National",
@@ -247,7 +246,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-21",
     "Headline": "Women’s hockey World Cup: India goes down fighting to Netherlands, suffers first loss",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/SQUARE_80/AFP_C6969XT.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/LANDSCAPE_1200/AFP_C6969XT.jpg",
     "Author": "Jagriti Chandra",
     "Article URL": "https://www.thehindu.com/sport/hockey/womens-hockey-world-cup-india-goes-down-fighting-to-netherlands-suffers-first-loss/article71375283.ece",
     "Category": "Sports",
@@ -259,7 +258,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-22",
     "Headline": "Saving faces: On protests, biometric surveillance",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/SQUARE_80/AFP_C6969XT.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/LANDSCAPE_1200/AFP_C6969XT.jpg",
     "Author": "Aashin Prasad",
     "Article URL": "https://www.thehindu.com/opinion/editorial/saving-faces-on-protests-biometric-surveillance/article71374244.ece",
     "Category": "General News",
@@ -271,7 +270,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-23",
     "Headline": "Noise annoys: On noise and the Patna High Court order",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/SQUARE_80/AFP_C6969XT.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/LANDSCAPE_1200/AFP_C6969XT.jpg",
     "Author": "Aashin Prasad",
     "Article URL": "https://www.thehindu.com/opinion/editorial/noise-annoys-on-noise-and-the-patna-high-court-order/article71374274.ece",
     "Category": "General News",
@@ -283,7 +282,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-24",
     "Headline": "Ensuring equity amid India’s educational progress",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/SQUARE_80/AFP_C6969XT.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3t2p95/article71375280.ece/alternates/LANDSCAPE_1200/AFP_C6969XT.jpg",
     "Author": "Aashin Prasad",
     "Article URL": "https://www.thehindu.com/opinion/lead/ensuring-equity-amid-indias-educational-progress/article71374765.ece",
     "Category": "General News",
@@ -295,7 +294,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-25",
     "Headline": "Unimpeded trade needs IPMDA as the answer",
-    "Image URL": "https://th-i.thgim.com/public/incoming/u4kk0h/article71374807.ece/alternates/SQUARE_80/Salpara.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/u4kk0h/article71374807.ece/alternates/LANDSCAPE_1200/Salpara.jpg",
     "Author": "Navneet  Sharma",
     "Article URL": "https://www.thehindu.com/opinion/op-ed/unimpeded-trade-needs-ipmda-as-the-answer/article71374728.ece",
     "Category": "General News",
@@ -307,7 +306,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-26",
     "Headline": "Can protest be dialogue?",
-    "Image URL": "https://th-i.thgim.com/public/incoming/vq0wiq/article71374744.ece/alternates/SQUARE_80/2025-06-17T171942Z_1950128094_RC2G4FADNY95_RTRMADP_3_IRAN-NUCLEAR-SHIPPING.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/vq0wiq/article71374744.ece/alternates/LANDSCAPE_1200/2025-06-17T171942Z_1950128094_RC2G4FADNY95_RTRMADP_3_IRAN-NUCLEAR-SHIPPING.JPG",
     "Author": "Pooja Bhatt",
     "Article URL": "https://www.thehindu.com/opinion/op-ed/can-protest-be-dialogue/article71372612.ece",
     "Category": "General News",
@@ -319,7 +318,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-27",
     "Headline": "Behind the byline",
-    "Image URL": "https://th-i.thgim.com/public/incoming/go67m6/article71372621.ece/alternates/SQUARE_80/07_Wangchuk_Hunger_Fast_09_07_Delhi.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/go67m6/article71372621.ece/alternates/LANDSCAPE_1200/07_Wangchuk_Hunger_Fast_09_07_Delhi.jpg",
     "Author": "Adithya  Reddy",
     "Article URL": "https://www.thehindu.com/opinion/op-ed/behind-the-byline/article71370592.ece",
     "Category": "General News",
@@ -331,7 +330,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-28",
     "Headline": "The Vanashakti verdict is balanced and pragmatic",
-    "Image URL": "https://th-i.thgim.com/public/latest-news/yw885t/article71370779.ece/alternates/SQUARE_80/iStock-2248912451.jpg",
+    "Image URL": "https://th-i.thgim.com/public/latest-news/yw885t/article71370779.ece/alternates/LANDSCAPE_1200/iStock-2248912451.jpg",
     "Author": "Sunalini Mathew",
     "Article URL": "https://www.thehindu.com/opinion/op-ed/the-vanashakti-verdict-is-balanced-and-pragmatic/article71370042.ece",
     "Category": "General News",
@@ -343,7 +342,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-29",
     "Headline": "Can free public technology break the private coaching industry?",
-    "Image URL": "https://th-i.thgim.com/public/opinion/op-ed/yusrl/article71370060.ece/alternates/SQUARE_80/iStock-1481289390.jpg",
+    "Image URL": "https://th-i.thgim.com/public/opinion/op-ed/yusrl/article71370060.ece/alternates/LANDSCAPE_1200/iStock-1481289390.jpg",
     "Author": "Kalaiselvan  Periyasamy",
     "Article URL": "https://www.thehindu.com/opinion/op-ed/can-free-public-technology-break-the-private-coaching-industry/article71370554.ece",
     "Category": "Science & Tech",
@@ -391,7 +390,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-33",
     "Headline": "Rahul’s street politics signals a new Opposition playbook",
-    "Image URL": "https://th-i.thgim.com/public/incoming/1m2orw/article71375147.ece/alternates/SQUARE_80/PTI08_21_2026_000541A.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/1m2orw/article71375147.ece/alternates/LANDSCAPE_1200/PTI08_21_2026_000541A.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/rahuls-street-politics-signals-a-new-opposition-playbook/article71374667.ece",
     "Category": "Political: National",
@@ -403,7 +402,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-34",
     "Headline": "Five years after Taliban takeover, life in Afghanistan marred by many struggles",
-    "Image URL": "https://th-i.thgim.com/public/incoming/typ0ze/article71370671.ece/alternates/SQUARE_80/AFP_C4QT49E.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/typ0ze/article71370671.ece/alternates/LANDSCAPE_1200/AFP_C4QT49E.jpg",
     "Author": "Sandeep Phukan",
     "Article URL": "https://www.thehindu.com/news/international/five-years-after-taliban-takeover-life-in-afghanistan-marred-by-many-struggles/article71369494.ece",
     "Category": "Political: International",
@@ -415,7 +414,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-35",
     "Headline": "Many TB prescriptions outside national programme do not follow treatment guidelines, study finds",
-    "Image URL": "https://th-i.thgim.com/public/incoming/b8rgua/article71372702.ece/alternates/SQUARE_80/AFP_1I4702.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/b8rgua/article71372702.ece/alternates/LANDSCAPE_1200/AFP_1I4702.jpg",
     "Author": "Smriti Sudesh",
     "Article URL": "https://www.thehindu.com/sci-tech/health/many-tb-prescriptions-outside-national-programme-do-not-follow-treatment-guidelines-study-finds/article71372690.ece",
     "Category": "Science & Tech",
@@ -427,7 +426,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-36",
     "Headline": "A secular republic’s sacrilege problem",
-    "Image URL": "https://th-i.thgim.com/public/incoming/u4kk0h/article71374807.ece/alternates/SQUARE_80/Salpara.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/u4kk0h/article71374807.ece/alternates/LANDSCAPE_1200/Salpara.jpg",
     "Author": "Navneet  Sharma",
     "Article URL": "https://www.thehindu.com/news/national/a-secular-republics-sacrilege-problem/article71360707.ece",
     "Category": "Political: National",
@@ -451,7 +450,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-38",
     "Headline": "Madras High Court dismisses A. Raja’s plea in disproportionate assets case probed by CBI",
-    "Image URL": "https://th-i.thgim.com/public/incoming/g05mh6/article71373039.ece/alternates/SQUARE_80/PTI08_17_2026_000083B.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/g05mh6/article71373039.ece/alternates/LANDSCAPE_1200/PTI08_17_2026_000083B.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/tamil-nadu/madras-high-court-dismisses-a-rajas-plea-in-disproportionate-assets-case-probed-by-cbi/article71372309.ece",
     "Category": "Political: National",
@@ -463,7 +462,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-39",
     "Headline": "Tamil Nadu lays out Vision 2031 with focus on green energy and charging infrastructure",
-    "Image URL": "https://th-i.thgim.com/public/incoming/di5w0v/article71372503.ece/alternates/SQUARE_80/23_Monsoon_Session_20_07_Delhi.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/di5w0v/article71372503.ece/alternates/LANDSCAPE_1200/23_Monsoon_Session_20_07_Delhi.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/cities/chennai/tamil-nadu-lays-out-vision-2031-with-focus-on-green-energy-and-charging-infrastructure/article71373601.ece",
     "Category": "Political: National",
@@ -487,7 +486,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-41",
     "Headline": "Heritage city mourns ‘Sowcar’ Janaki",
-    "Image URL": "https://th-i.thgim.com/public/incoming/fq4umo/article71373452.ece/alternates/SQUARE_80/Sowcar%20Janaki%20Gallery%20Rare%20Pictures.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/fq4umo/article71373452.ece/alternates/LANDSCAPE_1200/Sowcar%20Janaki%20Gallery%20Rare%20Pictures.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/entertainment/heritage-city-mourns-sowcar-janaki/article71373994.ece",
     "Category": "Entertainment",
@@ -499,7 +498,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-42",
     "Headline": "‘Sowcar’ Janaki, the versatile face of Tamil cinema known for majestic roles and finesses",
-    "Image URL": "https://th-i.thgim.com/public/incoming/v3jwlt/article71374168.ece/alternates/SQUARE_80/HP191325.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/v3jwlt/article71374168.ece/alternates/LANDSCAPE_1200/HP191325.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/entertainment/sowcar-janaki-the-versatile-face-of-tamil-cinema-known-for-majestic-roles-and-finesses-dies/article71373607.ece",
     "Category": "Entertainment",
@@ -511,7 +510,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-43",
     "Headline": "Sowcar Janaki’s Kannada cinema journey spanned generations and iconic stars",
-    "Image URL": "https://th-i.thgim.com/public/incoming/2kbi6n/article71373605.ece/alternates/SQUARE_80/THVGN_22-9-2013_13-3-41_SOWCARJANAKI.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/2kbi6n/article71373605.ece/alternates/LANDSCAPE_1200/THVGN_22-9-2013_13-3-41_SOWCARJANAKI.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/entertainment/movies/sowcar-janakis-kannada-cinema-journey-spanned-generations-and-iconic-stars/article71373534.ece",
     "Category": "Entertainment",
@@ -523,7 +522,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-44",
     "Headline": "How notices will be served and where voters will face SIR hearings",
-    "Image URL": "https://th-i.thgim.com/public/incoming/872yf/article71370575.ece/alternates/SQUARE_80/ALL_0964.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/872yf/article71370575.ece/alternates/LANDSCAPE_1200/ALL_0964.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/cities/bangalore/sir-how-notices-will-be-served-and-where-voters-will-face-hearings/article71369966.ece",
     "Category": "Political: National",
@@ -535,7 +534,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-45",
     "Headline": "Delhi SIR: draft roll publication deferred to Aug. 31 amid delay in polling station rationalisation",
-    "Image URL": "https://th-i.thgim.com/public/incoming/lmsmuh/article71366574.ece/alternates/SQUARE_80/TH18-Vijaita-InGKQGDNNTC.3.jpg.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/lmsmuh/article71366574.ece/alternates/LANDSCAPE_1200/TH18-Vijaita-InGKQGDNNTC.3.jpg.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/cities/Delhi/delhi-sir-draft-roll-publication-deferred-to-aug-31-amid-delay-in-polling-station-rationalisation/article71365454.ece",
     "Category": "Political: National",
@@ -547,7 +546,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-46",
     "Headline": "Over 43.80 lakh voters in Karnataka to get notice; over 20 lakh flagged for ‘logical discrepancy’",
-    "Image URL": "https://th-i.thgim.com/public/incoming/9udyna/article71369320.ece/alternates/SQUARE_80/_DSC4655.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/9udyna/article71369320.ece/alternates/LANDSCAPE_1200/_DSC4655.JPG",
     "Author": "Suruchi Kumari",
     "Article URL": "https://www.thehindu.com/news/national/karnataka/karnataka-sir-over-4380-lakh-voters-to-get-notice-over-20-lakh-flagged-for-logical-discrepancy/article71369088.ece",
     "Category": "Political: National",
@@ -559,7 +558,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-47",
     "Headline": "Telangana SIR: Why will 92 lakh electors receive notices? | Explained",
-    "Image URL": "https://th-i.thgim.com/public/incoming/rknt5e/article71358911.ece/alternates/SQUARE_80/Notices-will-beGR0GDIDVT.5.jpg.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/rknt5e/article71358911.ece/alternates/LANDSCAPE_1200/Notices-will-beGR0GDIDVT.5.jpg.jpg",
     "Author": "Rishita Khanna",
     "Article URL": "https://www.thehindu.com/news/national/telangana/sir-enumeration-phase-concludes-in-telangana-with-217-deletions-35-electors-due-for-notices-explained/article71358865.ece",
     "Category": "Political: National",
@@ -583,7 +582,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-49",
     "Headline": "I should have been more patient: Sindhu after bowing out of World championships",
-    "Image URL": "https://th-i.thgim.com/public/incoming/rfljh/article71370809.ece/alternates/SQUARE_80/PTI08_18_2026_000188A.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/rfljh/article71370809.ece/alternates/LANDSCAPE_1200/PTI08_18_2026_000188A.jpg",
     "Author": "R. Kaushik",
     "Article URL": "https://www.thehindu.com/sport/i-should-have-been-more-patient-sindhu-after-bowing-out-of-world-championships/article71370403.ece",
     "Category": "Sports",
@@ -595,7 +594,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-50",
     "Headline": "Data centres in Andaman & Nicobar: why did island administration withdraw its own proposal?",
-    "Image URL": "https://th-i.thgim.com/public/incoming/ci4m4u/article71370672.ece/alternates/SQUARE_80/52_BADMINTON_CHAMPIONSHIPS_20_08_DELHI.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/ci4m4u/article71370672.ece/alternates/LANDSCAPE_1200/52_BADMINTON_CHAMPIONSHIPS_20_08_DELHI.jpg",
     "Author": "Uthra Ganesan",
     "Article URL": "https://www.thehindu.com/news/national/andaman-and-nicobar-islands/andaman-nicobar-admin-issues-call-for-interest-for-data-centre-exploration-withdraws-it-days-later-explained/article71372364.ece",
     "Category": "Political: National",
@@ -607,7 +606,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-51",
     "Headline": "What led to the re-test of three UGC-NET papers? | Explained",
-    "Image URL": "https://th-i.thgim.com/public/incoming/tknzzt/article71372397.ece/alternates/SQUARE_80/20260428529L.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/tknzzt/article71372397.ece/alternates/LANDSCAPE_1200/20260428529L.jpg",
     "Author": "Abhinay Lakshman",
     "Article URL": "https://www.thehindu.com/education/what-led-to-the-re-test-of-threeugc-netpapers-explained/article71372196.ece",
     "Category": "Books & Education",
@@ -619,7 +618,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-52",
     "Headline": "How Supreme Court’s new ruling changes the definition of ‘industry’ | Explained",
-    "Image URL": "https://th-i.thgim.com/public/incoming/fv2iea/article68310681.ece/alternates/SQUARE_80/IMG_Students_check_their_2_1_QNCUV0II.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/fv2iea/article68310681.ece/alternates/LANDSCAPE_1200/IMG_Students_check_their_2_1_QNCUV0II.jpg",
     "Author": "Abhinay Lakshman",
     "Article URL": "https://www.thehindu.com/news/national/how-supreme-courts-new-ruling-changes-the-definition-of-industry-explainer/article71372126.ece",
     "Category": "Political: National",
@@ -631,7 +630,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-53",
     "Headline": "How Gaganyaan’s thermal protection system will survive re-entry | Explained",
-    "Image URL": "https://th-i.thgim.com/public/incoming/gkqaav/article71372181.ece/alternates/SQUARE_80/_DSC9163.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/gkqaav/article71372181.ece/alternates/LANDSCAPE_1200/_DSC9163.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sci-tech/science/how-gaganyaans-thermal-protection-system-will-survive-re-entry-explained/article71369185.ece",
     "Category": "Science & Tech",
@@ -643,7 +642,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-54",
     "Headline": "‘Irumudi’: Shiva Nirvana and Ravi Teja deliver an emotionally steeped tale",
-    "Image URL": "https://th-i.thgim.com/public/incoming/u8amu5/article71368844.ece/alternates/SQUARE_80/Irumudi-Glimpse-Out-WWM.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/u8amu5/article71368844.ece/alternates/LANDSCAPE_1200/Irumudi-Glimpse-Out-WWM.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/entertainment/movies/irumudi-movie-review-shiva-nirvana-and-ravi-teja-deliver-an-emotionally-steeped-tale/article71368827.ece",
     "Category": "Entertainment",
@@ -655,7 +654,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-55",
     "Headline": "‘Insidious: Out of the Further’: Further from its best",
-    "Image URL": "https://th-i.thgim.com/public/entertainment/movies/94iho2/article71372984.ece/alternates/SQUARE_80/HQGO_WPbQAAp_Lh.jpg",
+    "Image URL": "https://th-i.thgim.com/public/entertainment/movies/94iho2/article71372984.ece/alternates/LANDSCAPE_1200/HQGO_WPbQAAp_Lh.jpg",
     "Author": "Sangeetha Devi Dundoo",
     "Article URL": "https://www.thehindu.com/entertainment/movies/insidious-out-of-the-further-movie-review-horror-james-wan-blumhouse/article71373014.ece",
     "Category": "Entertainment",
@@ -667,7 +666,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-56",
     "Headline": "‘Pyaar Prema Kalyanam’: A juvenile, toothless take on gender roles",
-    "Image URL": "https://th-i.thgim.com/public/entertainment/movies/7ar66r/article71370741.ece/alternates/SQUARE_80/PyaarPremaKalyanam_Netflix_DSC08920_14749.jpg",
+    "Image URL": "https://th-i.thgim.com/public/entertainment/movies/7ar66r/article71370741.ece/alternates/LANDSCAPE_1200/PyaarPremaKalyanam_Netflix_DSC08920_14749.jpg",
     "Author": "Ayaan Paul Chowdhury",
     "Article URL": "https://www.thehindu.com/entertainment/movies/pyaar-prema-kalyanam-movie-review-netflix-elan-saanve-megghana-yuvan-shankar-raja/article71370598.ece",
     "Category": "Entertainment",
@@ -679,7 +678,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-57",
     "Headline": "‘Khalifa’: Prithviraj Sukumaran stars in a shoddily written old-school smuggling drama",
-    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/nu4jpl/article71368960.ece/alternates/SQUARE_80/khalifa.jpeg",
+    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/nu4jpl/article71368960.ece/alternates/LANDSCAPE_1200/khalifa.jpeg",
     "Author": "Bhuvanesh Chandar",
     "Article URL": "https://www.thehindu.com/entertainment/movies/khalifa-movie-review-khalifa-prithviraj-sukumaran-vysakh-mohanlal-smuggling-old-school-shoddily-written/article71368965.ece",
     "Category": "Entertainment",
@@ -691,7 +690,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-58",
     "Headline": "Need for phones with 8 GB RAM raises concern among Census enumerators in J&K",
-    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/nu4jpl/article71368960.ece/alternates/SQUARE_80/khalifa.jpeg",
+    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/nu4jpl/article71368960.ece/alternates/LANDSCAPE_1200/khalifa.jpeg",
     "Author": "S.R. Praveen",
     "Article URL": "https://www.thehindu.com/news/national/jammu-and-kashmir/need-for-phones-with-8-gb-ram-raises-concern-among-census-enumerators-in-jk/article71370606.ece",
     "Category": "Political: National",
@@ -703,7 +702,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-59",
     "Headline": "Congress seeks postponement of Census in Manipur, cites displacement",
-    "Image URL": "https://th-i.thgim.com/public/incoming/fosofa/article71370871.ece/alternates/SQUARE_80/HQLXvyjaUAAzGNC.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/fosofa/article71370871.ece/alternates/LANDSCAPE_1200/HQLXvyjaUAAzGNC.jpg",
     "Author": "Vijaita Singh",
     "Article URL": "https://www.thehindu.com/news/national/manipur/congress-seeks-postponement-of-census-in-manipur-cites-displacement/article71370414.ece",
     "Category": "Political: National",
@@ -715,7 +714,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-60",
     "Headline": "As NRC demand intensifies, Manipur community leaders leave for Delhi",
-    "Image URL": "https://th-i.thgim.com/public/incoming/wyofk7/article71370702.ece/alternates/SQUARE_80/20260820352L.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/wyofk7/article71370702.ece/alternates/LANDSCAPE_1200/20260820352L.jpg",
     "Author": "Vijaita Singh",
     "Article URL": "https://www.thehindu.com/news/national/manipur/as-nrc-demand-intensifies-manipur-community-leaders-leave-for-delhi/article71368514.ece",
     "Category": "Political: National",
@@ -727,7 +726,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-61",
     "Headline": "Keralam LoP Vijayan slams questionnaire seeking details of parents’ religion, place of birth",
-    "Image URL": "https://th-i.thgim.com/public/incoming/uc8f41/article71368884.ece/alternates/SQUARE_80/20260819423L.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/uc8f41/article71368884.ece/alternates/LANDSCAPE_1200/20260819423L.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/kerala/census-2027-keralam-opposition-leader-pinarayi-vijayan-slams-questionnaire-seeking-details-of-parents-religion-place-of-birth/article71364850.ece",
     "Category": "Political: National",
@@ -739,7 +738,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-62",
     "Headline": "West Asia war highlights: Iran’s President says time to end war while in position of strength",
-    "Image URL": "https://th-i.thgim.com/public/life-and-style/h6k6vp/article71368314.ece/alternates/SQUARE_80/Betel%20leaf%20in%20rituals.jpg",
+    "Image URL": "https://th-i.thgim.com/public/life-and-style/h6k6vp/article71368314.ece/alternates/LANDSCAPE_1200/Betel%20leaf%20in%20rituals.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/international/iran-us-war-live-updates-donald-trump-economic-sanctions-strait-of-hormuz-ceasefire-deal/article71372035.ece",
     "Category": "Political: International",
@@ -751,7 +750,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-63",
     "Headline": "Iran dismisses U.S. threats on ‘coordinated economic isolation’",
-    "Image URL": "https://th-i.thgim.com/public/incoming/fbdo5z/article71375351.ece/alternates/SQUARE_80/2026-08-08T190306Z_41190565_RC2IUMAYIM5T_RTRMADP_3_IRAN-CRISIS.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/fbdo5z/article71375351.ece/alternates/LANDSCAPE_1200/2026-08-08T190306Z_41190565_RC2IUMAYIM5T_RTRMADP_3_IRAN-CRISIS.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/international/iran-dismisses-us-threats-on-coordinated-economic-isolation/article71372623.ece",
     "Category": "Political: International",
@@ -763,7 +762,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-64",
     "Headline": "U.S. pushes allies, China to back Trump’s economic war on Iran",
-    "Image URL": "https://th-i.thgim.com/public/incoming/66tng6/article71372644.ece/alternates/SQUARE_80/PTI05_15_2026_000155B.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/66tng6/article71372644.ece/alternates/LANDSCAPE_1200/PTI05_15_2026_000155B.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/international/us-pushes-allies-china-to-back-trumps-economic-war-on-iran/article71371992.ece",
     "Category": "Political: International",
@@ -775,7 +774,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-65",
     "Headline": "Quiet channel between ICE and Iran shaped deportation flights, newly released emails show",
-    "Image URL": "https://th-i.thgim.com/public/incoming/umfgej/article71371993.ece/alternates/SQUARE_80/2026-08-20T153741Z_1726519747_RC2F2NAG98JE_RTRMADP_3_USA-TRUMP.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/umfgej/article71371993.ece/alternates/LANDSCAPE_1200/2026-08-20T153741Z_1726519747_RC2F2NAG98JE_RTRMADP_3_USA-TRUMP.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/international/quiet-channel-between-ice-and-iran-shaped-deportation-flights-newly-released-emails-show/article71367966.ece",
     "Category": "Political: International",
@@ -787,7 +786,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-66",
     "Headline": "‘Bethlehem Kudumba Unit’ movie review: Girish AD works his magic yet again in Nivin Pauly-Mamitha Baiju starrer",
-    "Image URL": "https://th-i.thgim.com/public/incoming/v3jwlt/article71374168.ece/alternates/SQUARE_80/HP191325.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/v3jwlt/article71374168.ece/alternates/LANDSCAPE_1200/HP191325.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/entertainment/movies/bethlehem-kudumba-unit-review-nivin-pauly-mamitha-baiju-girish-ad-age-gap-romance-malayalam-movie/article71373578.ece",
     "Category": "Entertainment",
@@ -799,7 +798,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-67",
     "Headline": "AUS vs BAN Day 1: Bangladesh all out for 64 in 2nd Test after Starc masterclass",
-    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/adk7tj/article71373575.ece/alternates/SQUARE_80/BKU.JPEG",
+    "Image URL": "https://th-i.thgim.com/public/news/national/kerala/adk7tj/article71373575.ece/alternates/LANDSCAPE_1200/BKU.JPEG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sport/cricket/australia-vs-bangladesh-test-match-2-day-1-mitchell-starc-shanto-updates/article71376427.ece",
     "Category": "Sports",
@@ -811,7 +810,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-68",
     "Headline": "FIFA slaps Argentina with fines, bans over World Cup final",
-    "Image URL": "https://th-i.thgim.com/public/incoming/mqv732/article71376429.ece/alternates/SQUARE_80/AFP_C69Q2ZH.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/mqv732/article71376429.ece/alternates/LANDSCAPE_1200/AFP_C69Q2ZH.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sport/football/fifa-slaps-argentina-with-fines-bans-over-world-cup-final/article71376416.ece",
     "Category": "Sports",
@@ -823,7 +822,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-69",
     "Headline": "Abnormal service resumes: the 2026 F1 season rolls on",
-    "Image URL": "https://th-i.thgim.com/public/incoming/3rm5pb/article71376417.ece/alternates/SQUARE_80/FIFA-Argentina_Bans_Soccer_65453.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/3rm5pb/article71376417.ece/alternates/LANDSCAPE_1200/FIFA-Argentina_Bans_Soccer_65453.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sport/motorsport/f1-2026-mid-season-review-antonelli-hamilton-verstappen-russell/article71373790.ece",
     "Category": "Sports",
@@ -835,7 +834,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-70",
     "Headline": "France recalls rare disease drug Tavneos after deaths",
-    "Image URL": "https://th-i.thgim.com/public/incoming/b72qfj/article71376533.ece/alternates/SQUARE_80/2026-08-20T093707Z_715636108_RC29CLA2CK9J_RTRMADP_3_HEALTH-EBOLA-CONGO-REBELS.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/b72qfj/article71376533.ece/alternates/LANDSCAPE_1200/2026-08-20T093707Z_715636108_RC29CLA2CK9J_RTRMADP_3_HEALTH-EBOLA-CONGO-REBELS.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sci-tech/health/france-recalls-rare-disease-drug-tavneos-after-deaths/article71374002.ece",
     "Category": "Science & Tech",
@@ -847,7 +846,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-71",
     "Headline": "'Breakthrough' mRNA cancer drug curbs melanoma in large trial",
-    "Image URL": "https://th-i.thgim.com/public/incoming/o8octd/article71374055.ece/alternates/SQUARE_80/IMG_Woman_Taking_Pills_o_2_1_STC7P3CN.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/o8octd/article71374055.ece/alternates/LANDSCAPE_1200/IMG_Woman_Taking_Pills_o_2_1_STC7P3CN.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sci-tech/health/breakthrough-mrna-cancer-drug-curbs-melanoma-in-large-trial/article71373927.ece",
     "Category": "Science & Tech",
@@ -859,7 +858,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-72",
     "Headline": "India calls for stronger global tech collaboration at BRICS meet",
-    "Image URL": "https://th-i.thgim.com/public/incoming/4umi4w/article71373975.ece/alternates/SQUARE_80/AFP_C62E9WH.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/4umi4w/article71373975.ece/alternates/LANDSCAPE_1200/AFP_C62E9WH.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/india-calls-for-stronger-global-tech-collaboration-at-brics-meet/article71373671.ece",
     "Category": "Political: International",
@@ -871,7 +870,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-73",
     "Headline": "New studies pursue the ‘perfect’ blend for coffee and health",
-    "Image URL": "https://th-i.thgim.com/public/incoming/cyx097/article71375028.ece/alternates/SQUARE_80/_DSC1208.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/cyx097/article71375028.ece/alternates/LANDSCAPE_1200/_DSC1208.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/sci-tech/science/new-studies-pursue-the-perfect-blend-for-coffee-and-health/article71360605.ece",
     "Category": "Science & Tech",
@@ -883,7 +882,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-74",
     "Headline": "Illustrator Athulya Pillai’s silent comic, ‘Nanavu’, tells the story of tidal flooding in Kochi",
-    "Image URL": "https://th-i.thgim.com/public/incoming/2q3jwq/article71370704.ece/alternates/SQUARE_80/PTI04_15_2026_000342B.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/2q3jwq/article71370704.ece/alternates/LANDSCAPE_1200/PTI04_15_2026_000342B.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/books/illustrator-athulya-pillais-silent-comic-nanavu-tells-the-story-of-tidal-flooding-in-kochi/article71338303.ece",
     "Category": "Books & Education",
@@ -895,7 +894,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-75",
     "Headline": "When healthcare comes too late | Review of Ramani Atkuri’s Staying Alive",
-    "Image URL": "https://th-i.thgim.com/public/incoming/jgr0ge/article71338331.ece/alternates/SQUARE_80/Page_13.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/jgr0ge/article71338331.ece/alternates/LANDSCAPE_1200/Page_13.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/books/books-reviews/review-of-ramani-atkuri-staying-alive/article71355631.ece",
     "Category": "Books & Education",
@@ -907,7 +906,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-76",
     "Headline": "A love letter to Mumbai | Review of Meher Mirza’s Sea, Salt & Spice",
-    "Image URL": "https://th-i.thgim.com/public/incoming/ka6c7d/article71355805.ece/alternates/SQUARE_80/IMG_Community_project_2_1_C6E2HT2H.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/ka6c7d/article71355805.ece/alternates/LANDSCAPE_1200/IMG_Community_project_2_1_C6E2HT2H.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/books/books-reviews/review-of-meher-mirzas-sea-salt-amp-spice/article71359122.ece",
     "Category": "Books & Education",
@@ -919,7 +918,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-77",
     "Headline": "Why India’s colleges need to build accessibility into digital learning systems",
-    "Image URL": "https://th-i.thgim.com/public/society/whjip7/article71368652.ece/alternates/SQUARE_80/GettyImages-1250774509.jpg",
+    "Image URL": "https://th-i.thgim.com/public/society/whjip7/article71368652.ece/alternates/LANDSCAPE_1200/GettyImages-1250774509.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/education/why-indias-colleges-need-to-build-accessibility-into-digital-learning-systems/article71372384.ece",
     "Category": "Books & Education",
@@ -931,7 +930,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-78",
     "Headline": "48 teachers to be honoured by President on September 5",
-    "Image URL": "https://th-i.thgim.com/public/incoming/7g2wle/article71372552.ece/alternates/SQUARE_80/Online%20article.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/7g2wle/article71372552.ece/alternates/LANDSCAPE_1200/Online%20article.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/news/national/teachers-to-be-honoured-by-president-on-september-5/article71375223.ece",
     "Category": "Political: National",
@@ -943,7 +942,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-79",
     "Headline": "News from the world of Education: August 21, 2026",
-    "Image URL": "https://th-i.thgim.com/public/news/resources/cgikuj/article69140676.ece/alternates/SQUARE_80/PresidentMurmu.jpg",
+    "Image URL": "https://th-i.thgim.com/public/news/resources/cgikuj/article69140676.ece/alternates/LANDSCAPE_1200/PresidentMurmu.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/education/news-from-the-world-of-education-august-21-2026/article71375242.ece",
     "Category": "Books & Education",
@@ -955,7 +954,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-80",
     "Headline": "Aathi Kalathu Nei Mittai Kadai, more than 130 years old shop in Madurai serving traditional sweets and savouries that evoke nostalgia",
-    "Image URL": "https://th-i.thgim.com/public/education/tz9cz3/article71375234.ece/alternates/SQUARE_80/28EPBS_Fillers.jpg",
+    "Image URL": "https://th-i.thgim.com/public/education/tz9cz3/article71375234.ece/alternates/LANDSCAPE_1200/28EPBS_Fillers.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/food/features/aathi-kalathu-nei-mittai-kadai-more-than-130-years-old-shop-in-madurai-serving-traditional-sweets-and-savouries-that-evoke-nostalgia/article71360058.ece",
     "Category": "Lifestyle & Food",
@@ -967,7 +966,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-81",
     "Headline": "Monsoon cocktails: Nine bartender-approved recipes for the rains",
-    "Image URL": "https://th-i.thgim.com/public/incoming/jcu6ly/article71361024.ece/alternates/SQUARE_80/9871_18_8_2026_19_13_32_2_DSC_8356.JPG",
+    "Image URL": "https://th-i.thgim.com/public/incoming/jcu6ly/article71361024.ece/alternates/LANDSCAPE_1200/9871_18_8_2026_19_13_32_2_DSC_8356.JPG",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/food/features/monsoon-cocktails-nine-bartender-approved-recipes-for-the-rains/article71192688.ece",
     "Category": "Lifestyle & Food",
@@ -979,7 +978,7 @@ const DEFAULT_NEWS_ARTICLES = [
   {
     "id": "sheet-item-82",
     "Headline": "These twin restaurants in Kolkata, TUA and Synthe, share an address, but nothing more",
-    "Image URL": "https://th-i.thgim.com/public/incoming/tfmngj/article71229066.ece/alternates/SQUARE_80/Monsoon%20Ember.jpg",
+    "Image URL": "https://th-i.thgim.com/public/incoming/tfmngj/article71229066.ece/alternates/LANDSCAPE_1200/Monsoon%20Ember.jpg",
     "Author": "The Hindu Bureau",
     "Article URL": "https://www.thehindu.com/food/dining/these-twin-restaurants-in-kolkata-tua-and-synthe-share-an-address-but-nothing-more/article71308595.ece",
     "Category": "Lifestyle & Food",
