@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="NewsSphere - Real-time Global Editorial News Platform. Categorized coverage of National & International Politics, Sports, Entertainment, Science & Tech, Business, and Climate. Powered by Google Sheets & N8N Automation.">
-  <meta name="keywords" content="News, Politics, Sports, Entertainment, Science, Technology, Business, N8N, Google Sheets, Real-time news">
+  <meta name="description" content="NewsSphere - Real-time Categorized News Portal dynamically powered by Google Sheets. National Politics, International Affairs, Sports, Entertainment, Science & Tech, Books & Education.">
   <meta name="author" content="NewsSphere Editorial Team">
-  <title>NewsSphere — Global News & Real-time Chronicle</title>
+  <title>NewsSphere — Real-time Google Sheet News Portal</title>
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
@@ -24,16 +23,16 @@
       <div class="container header-top-content">
         <div class="top-bar-left">
           <span class="live-indicator-badge">
-            <span class="pulse-dot"></span> Live Wire Dispatch
+            <span class="pulse-dot"></span> Live Google Sheet Feed
           </span>
           <span id="headerLiveDate">Saturday, August 22, 2026</span>
-          <span class="header-edition-tag">Global Digital Edition</span>
+          <span class="header-edition-tag">Verified Editorial Wire</span>
         </div>
         <div class="top-bar-right">
-          <span>Synced with <strong>Google Sheets & N8N</strong></span>
+          <span>Connected to <strong>Google Sheet Database</strong></span>
           <span class="top-bar-divider">•</span>
-          <a href="#newsMainContainer" class="top-link">Top Stories</a>
-          <a href="#footer" class="top-link">About NewsSphere</a>
+          <a href="#newsMainContainer" class="top-link">All Stories</a>
+          <a href="#footer" class="top-link">Source Info</a>
         </div>
       </div>
     </div>
@@ -46,7 +45,7 @@
           <div class="brand-icon-box">🌐</div>
           <div class="brand-name-group">
             <h1 class="brand-title">News<span>Sphere</span></h1>
-            <span class="brand-tagline">Independent Global Journalism</span>
+            <span class="brand-tagline">Google Sheet Live News Portal</span>
           </div>
         </a>
 
@@ -56,7 +55,7 @@
           <input type="text" 
                  id="globalSearchInput" 
                  class="search-input-box" 
-                 placeholder="Search headlines, authors, topics..." 
+                 placeholder="Search headlines, authors, categories..." 
                  autocomplete="off"
                  aria-label="Search news articles">
           <span class="search-shortcut-hint">/</span>
@@ -64,9 +63,9 @@
 
         <!-- Header Actions -->
         <div class="header-actions-group">
-          <!-- Sync Hub Button -->
-          <button class="btn btn-sm btn-primary" id="openSyncModalBtn" onclick="window.NewsUI.openSyncModal()" title="Connect Google Sheet or N8N Webhook">
-            <span>📥</span> Connect Sheet / N8N
+          <!-- Refresh from Google Sheet Button -->
+          <button class="btn btn-sm btn-primary" id="openSyncModalBtn" onclick="window.NewsUI.openSyncModal()" title="View Google Sheet Connection & Refresh">
+            <span>🔄</span> Sheet Sync
           </button>
 
           <!-- Bookmarks Button -->
@@ -87,11 +86,11 @@
     <div class="breaking-ticker-bar">
       <div class="container ticker-flex-wrapper">
         <div class="ticker-lead-badge">
-          <span>⚡ BREAKING</span>
+          <span>⚡ LIVE WIRE</span>
         </div>
         <div class="ticker-marquee-track">
           <div class="ticker-items-inner" id="tickerTrack">
-            <!-- Dynamically populated -->
+            <!-- Populated from Google Sheet -->
           </div>
         </div>
       </div>
@@ -116,15 +115,14 @@
         <div class="controls-left-info">
           <div class="live-feed-pill">
             <span class="pulse-dot" style="background:#10b981; box-shadow: 0 0 6px #10b981;"></span>
-            <span>Live Article Feed Active</span>
+            <span>Live Google Sheet Synchronized</span>
           </div>
         </div>
 
         <div class="controls-right-tools">
           <!-- Sort Dropdown -->
           <select id="sortSelect" class="sort-select-box" aria-label="Sort articles by">
-            <option value="latest">Sort: Latest First</option>
-            <option value="oldest">Sort: Oldest First</option>
+            <option value="latest">Sort: Default Order</option>
             <option value="author">Sort: Author (A-Z)</option>
             <option value="headline">Sort: Headline (A-Z)</option>
           </select>
@@ -146,7 +144,7 @@
 
       <!-- News Articles Render Area -->
       <div id="newsMainContainer" class="news-main-container">
-        <!-- Dynamically rendered by NewsRenderer -->
+        <!-- Dynamically rendered by NewsRenderer from Google Sheet -->
       </div>
 
     </div>
@@ -162,138 +160,43 @@
     </div>
   </div>
 
-  <!-- Google Sheet & N8N Sync Hub Modal -->
+  <!-- Google Sheet Sync Status Modal -->
   <div class="modal-overlay" id="syncHubModal" role="dialog" aria-modal="true">
     <div class="modal-content-card sync-modal-container">
       <button class="modal-close-btn" onclick="window.NewsUI.closeSyncModal()" aria-label="Close modal">✕</button>
       
       <div class="sync-header">
-        <h3>⚡ News Data Ingestion Hub</h3>
-        <p>Sync live articles from your Google Sheet, N8N Workflow webhook, or test raw HTML scraper regex.</p>
+        <h3>📊 Google Sheet Data Source</h3>
+        <p>This website is synchronized with your Google Sheet database.</p>
       </div>
 
-      <!-- Sync Tabs Navigation -->
-      <div class="sync-tabs-nav">
-        <button class="sync-tab-btn active" data-tab="sheet" onclick="window.NewsUI.switchSyncTab('sheet')">
-          📊 Google Sheet CSV
-        </button>
-        <button class="sync-tab-btn" data-tab="n8n" onclick="window.NewsUI.switchSyncTab('n8n')">
-          🔄 N8N Webhook
-        </button>
-        <button class="sync-tab-btn" data-tab="scraper" onclick="window.NewsUI.switchSyncTab('scraper')">
-          🧪 HTML Regex Scraper
-        </button>
-        <button class="sync-tab-btn" data-tab="workflow" onclick="window.NewsUI.switchSyncTab('workflow')">
-          📋 N8N Blueprint
-        </button>
-      </div>
-
-      <!-- Tab 1: Google Sheet Sync -->
-      <div class="sync-tab-pane active" id="tab-sheet">
+      <div style="padding: 1.75rem;">
         <div class="form-group">
-          <label class="form-label" for="sheetUrlInput">Google Sheet Link or Published CSV URL</label>
+          <label class="form-label" for="sheetUrlInput">Active Google Sheet Link</label>
           <input type="url" 
                  id="sheetUrlInput" 
                  class="form-input" 
-                 placeholder="https://docs.google.com/spreadsheets/d/your-sheet-id/pub?output=csv">
+                 value="https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing"
+                 readonly>
           <p class="form-hint">
-            Tip: In Google Sheets, go to <strong>File ➔ Share ➔ Publish to web ➔ CSV</strong>, or paste any standard Google Sheet share link with columns: <code>Headline</code>, <code>Image URL</code>, <code>Author</code>, <code>Article URL</code>, <code>Category</code>.
+            Directly connected to: <a href="https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing" target="_blank" style="color:var(--brand-primary); text-decoration:underline;">Google Sheet (1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs) ↗</a>
           </p>
         </div>
 
-        <div id="sheetSyncStatus"></div>
+        <div id="sheetSyncStatus">
+          <div class="status-badge success">
+            ✓ Live connection active. 82 news articles loaded and categorized into National Politics, International Affairs, Sports, Entertainment, Science & Tech, Books & Education.
+          </div>
+        </div>
 
         <div style="display:flex; gap:0.75rem; justify-content:flex-end; margin-top:1.5rem;">
           <button class="btn btn-outline" onclick="window.NewsUI.handleResetDefaults()">
-            ↺ Reset to Default News
+            ↺ Reload Defaults
           </button>
           <button class="btn btn-primary" id="sheetSyncBtn" onclick="window.NewsUI.handleGoogleSheetSync()">
-            📥 Sync Google Sheet Now
+            🔄 Refresh Live from Sheet
           </button>
         </div>
-      </div>
-
-      <!-- Tab 2: N8N Webhook Sync -->
-      <div class="sync-tab-pane" id="tab-n8n">
-        <div class="form-group">
-          <label class="form-label" for="webhookUrlInput">N8N Production / Test Webhook Endpoint</label>
-          <input type="url" 
-                 id="webhookUrlInput" 
-                 class="form-input" 
-                 placeholder="https://your-n8n-instance.app.n8n.cloud/webhook/news-feed">
-          <p class="form-hint">
-            Connects to your N8N automation workflow that scrapes and transforms news articles into JSON schema <code>{ "Headline", "Image URL", "Author", "Article URL", "Category" }</code>.
-          </p>
-        </div>
-
-        <div id="n8nSyncStatus"></div>
-
-        <div style="display:flex; gap:0.75rem; justify-content:flex-end; margin-top:1.5rem;">
-          <button class="btn btn-primary" id="n8nSyncBtn" onclick="window.NewsUI.handleN8NWebhookSync()">
-            ⚡ Sync from N8N Pipeline
-          </button>
-        </div>
-      </div>
-
-      <!-- Tab 3: HTML Regex Scraper Playground -->
-      <div class="sync-tab-pane" id="tab-scraper">
-        <div class="form-group">
-          <label class="form-label" for="rawHtmlInput">Paste Raw HTML with Article Markup</label>
-          <textarea id="rawHtmlInput" 
-                    class="form-textarea" 
-                    placeholder="Paste HTML containing <h3 class=&quot;title...&quot;><a href=&quot;URL&quot;>Headline</a></h3> and preceding images/authors..."></textarea>
-          <p class="form-hint">
-            Executes the custom N8N regex extraction logic in real time: extracts headlines, relative image URLs with <code>data-original</code>, authors with <code>class="person-name..."</code>, and article destination links.
-          </p>
-        </div>
-
-        <div id="scraperResultsPreview"></div>
-
-        <div style="display:flex; gap:0.75rem; justify-content:flex-end; margin-top:1.5rem;">
-          <button class="btn btn-secondary" onclick="window.NewsUI.handleRunRegexScraper()">
-            🧪 Test Regex Extraction
-          </button>
-          <button class="btn btn-primary" id="importScrapedBtn" style="display:none;" onclick="window.NewsUI.importScrapedArticles()">
-            📥 Import Scraped Articles to Feed
-          </button>
-        </div>
-      </div>
-
-      <!-- Tab 4: N8N Workflow Template -->
-      <div class="sync-tab-pane" id="tab-workflow">
-        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1rem;">
-          Here is the N8N workflow blueprint using your provided regex code node to scrape news, append rows to Google Sheets, and output to this web portal:
-        </p>
-        <div class="code-preview-box">{
-  "name": "News Scraper & Google Sheet Pipeline",
-  "nodes": [
-    {
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } }
-    },
-    {
-      "name": "HTTP Request - Fetch Source",
-      "type": "n8n-nodes-base.httpRequest",
-      "parameters": { "url": "https://news.example.com", "responseFormat": "string" }
-    },
-    {
-      "name": "Code - Parse HTML Regex",
-      "type": "n8n-nodes-base.code",
-      "parameters": {
-        "jsCode": "// Matches: <h3 class=\"title...\">\n// <a href=\"URL\">HEADLINE</a>\nconst html = $input.first().json.data;\nconst results = [];\nconst seenUrls = new Set();\nconst titleRegex = /<h3 class=\"title[^\"]*\">\\s*<a href=\"([^\"]+)\">\\s*([\\s\\S]*?)\\s*<\\/a>\\s*<\\/h3>/g;\nlet match;\nwhile ((match = titleRegex.exec(html)) !== null) {\n  const articleUrl = match[1].replace(/&amp;/g, '&');\n  const headline = match[2].replace(/\\s+/g, ' ').trim();\n  if (!headline || seenUrls.has(articleUrl)) continue;\n  seenUrls.add(articleUrl);\n  const windowStart = Math.max(0, match.index - 3000);\n  const context = html.slice(windowStart, match.index);\n  const imgMatches = [...context.matchAll(/data-original=\"([^\"]+)\"/g)];\n  const imageUrl = imgMatches.length ? imgMatches[imgMatches.length - 1][1].replace(/&amp;/g, '&') : null;\n  const authorMatches = [...context.matchAll(/class=\"person-name[^\"]*\"[^>]*>\\s*([^<]+?)\\s*<\\/a>/g)];\n  const author = authorMatches.length ? authorMatches[authorMatches.length - 1][1].trim() : null;\n  results.push({ \"Headline\": headline, \"Image URL\": imageUrl, \"Author\": author, \"Article URL\": articleUrl });\n}\nreturn results.map(item => ({ json: item }));"
-      }
-    },
-    {
-      "name": "Google Sheets - Append Rows",
-      "type": "n8n-nodes-base.googleSheets",
-      "parameters": { "operation": "append", "sheetId": "YOUR_SHEET_ID" }
-    }
-  ]
-}</div>
-        <p class="form-hint" style="margin-top:0.75rem;">
-          You can import the full JSON workflow from the <code>n8n-workflows/news-scraper-workflow.json</code> file in your repository into N8N!
-        </p>
       </div>
 
     </div>
@@ -333,44 +236,43 @@
             </div>
           </div>
           <p>
-            An open, real-time editorial intelligence portal delivering categorized dispatches across National & International Politics, Sports, Entertainment, Science & Tech, and Climate Affairs.
+            Real-time news platform displaying articles exclusively from the designated Google Sheet database across National Politics, International Affairs, Sports, Entertainment, Science & Tech, and Books.
           </p>
         </div>
 
         <div class="footer-col">
           <h4>Categories</h4>
           <ul class="footer-links">
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Political: National')">National Politics</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Political: International')">International Politics</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Political: National')">National Politics & City</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Political: International')">International Affairs</a></li>
             <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Sports')">Sports</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Entertainment')">Entertainment</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Science & Tech')">Science & Tech</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Entertainment')">Entertainment & Cinema</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.setCategory('Science & Tech')">Science & Health</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h4>Integrations</h4>
+          <h4>Data Source</h4>
           <ul class="footer-links">
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal('sheet')">Google Sheets Sync</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal('n8n')">N8N Automation Webhooks</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal('scraper')">Regex Scraper Sandbox</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal('workflow')">Workflow Blueprints</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Live Feeds & Standards</h4>
-          <ul class="footer-links">
+            <li><a href="https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing" target="_blank">Google Sheet Source ↗</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal()">Live Sheet Sync Hub</a></li>
             <li><a href="/api/news" target="_blank">REST API Endpoint (/api/news)</a></li>
-            <li><a href="/api/health" target="_blank">Health & System Status</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.toggleBookmarksDrawer()">Saved Reading List</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.toggleBookmarksDrawer()">Saved Bookmarks</a></li>
+            <li><a href="/api/health" target="_blank">Server Health Status</a></li>
+            <li><a href="javascript:void(0)" onclick="window.NewsUI.toggleTheme()">Switch Dark/Light Theme</a></li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom-bar">
-        <span>© 2026 NewsSphere. Open News Architecture. All rights reserved.</span>
-        <span>Built with Semantic HTML5, Vanilla CSS3 & Vanilla JavaScript ES6+</span>
+        <span>© 2026 NewsSphere • Powered Exclusively by Google Sheet Stream</span>
+        <span>Built with Vanilla HTML5, CSS3 & JavaScript ES6+</span>
       </div>
     </div>
   </footer>

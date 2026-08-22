@@ -1,5 +1,5 @@
 /**
- * Main Application Controller - Coordinates Event Handlers, Modals, Theme, and Integrations
+ * Main Application Controller - Coordinates Event Handlers, Modals, Theme, and Google Sheets Sync
  */
 
 class NewsAppUI {
@@ -10,11 +10,11 @@ class NewsAppUI {
     this.init();
   }
 
-  init() {
+  async init() {
     window.NewsRenderer.updateBookmarkBadges();
     window.NewsRenderer.refreshCurrentView();
 
-    // Check if URL has category or query parameter
+    // Check URL parameters
     const params = new URLSearchParams(window.location.search);
     if (params.has('cat')) {
       this.setCategory(params.get('cat'));
@@ -25,6 +25,14 @@ class NewsAppUI {
       if (searchInput) searchInput.value = q;
       window.NewsRenderer.searchQuery = q;
       window.NewsRenderer.refreshCurrentView();
+    }
+
+    // Try fetching fresh data from Google Sheet in the background
+    try {
+      await window.NewsSync.syncFromGoogleSheet();
+      window.NewsRenderer.refreshCurrentView();
+    } catch (e) {
+      console.info('Loaded cached Google Sheet articles');
     }
   }
 
@@ -67,7 +75,7 @@ class NewsAppUI {
     setInterval(updateDate, 60000);
   }
 
-  // Setup Event Listeners
+  // Event Listeners
   initEventListeners() {
     // Live Search
     const searchInput = document.getElementById('globalSearchInput');
@@ -119,7 +127,7 @@ class NewsAppUI {
       }
     });
 
-    // Close Modals on Backdrop Click
+    // Modal Backdrop Clicks
     document.querySelectorAll('.modal-overlay').forEach(modal => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -129,20 +137,18 @@ class NewsAppUI {
     });
   }
 
-  // Set Category Filter
+  // Category Filter
   setCategory(categoryKey) {
     window.NewsRenderer.currentCategory = categoryKey;
     window.NewsRenderer.renderCategoryPills();
     window.NewsRenderer.renderMainContent();
 
-    // Scroll smoothly to main news section
     const mainSection = document.getElementById('newsMainContainer');
     if (mainSection) {
       mainSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
-  // Clear Search and Filters
   clearSearchAndFilters() {
     const searchInput = document.getElementById('globalSearchInput');
     if (searchInput) searchInput.value = '';
@@ -152,7 +158,7 @@ class NewsAppUI {
     window.NewsRenderer.renderMainContent();
   }
 
-  // Reader Modal Controls
+  // Reader Modal
   openReaderModal(id) {
     window.NewsRenderer.openReaderModal(id);
   }
@@ -198,22 +204,18 @@ class NewsAppUI {
     }
   }
 
-  // Sync Hub Modal
-  openSyncModal(activeTab = 'sheet') {
+  // Google Sheet Modal
+  openSyncModal() {
     const modal = document.getElementById('syncHubModal');
     if (!modal) return;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    // Populate existing config
-    const config = window.NewsSync.getConfig();
-    const sheetInput = document.getElementById('sheetUrlInput');
-    const webhookInput = document.getElementById('webhookUrlInput');
-    if (sheetInput && config.sheetUrl) sheetInput.value = config.sheetUrl;
-    if (webhookInput && config.n8nWebhookUrl) webhookInput.value = config.n8nWebhookUrl;
-
-    this.switchSyncTab(activeTab);
+    const input = document.getElementById('sheetUrlInput');
+    if (input) {
+      input.value = 'https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing';
+    }
   }
 
   closeSyncModal() {
@@ -222,43 +224,30 @@ class NewsAppUI {
     document.body.style.overflow = '';
   }
 
-  switchSyncTab(tabId) {
-    document.querySelectorAll('.sync-tab-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
-    });
-    document.querySelectorAll('.sync-tab-pane').forEach(pane => {
-      pane.classList.toggle('active', pane.id === `tab-${tabId}`);
-    });
-  }
-
-  // 1. Trigger Google Sheet Live Sync
+  // Sync Google Sheet Now
   async handleGoogleSheetSync() {
-    const input = document.getElementById('sheetUrlInput');
     const statusBox = document.getElementById('sheetSyncStatus');
     const syncBtn = document.getElementById('sheetSyncBtn');
-    if (!input || !statusBox || !syncBtn) return;
+    const input = document.getElementById('sheetUrlInput');
+    if (!statusBox || !syncBtn) return;
 
-    const url = input.value.trim();
-    if (!url) {
-      statusBox.innerHTML = `<div class="status-badge error">Please enter a valid Google Sheet or CSV URL.</div>`;
-      return;
-    }
+    const url = (input && input.value.trim()) ? input.value.trim() : window.NewsSync.defaultSheetUrl;
 
     try {
       syncBtn.disabled = true;
-      syncBtn.innerHTML = `⏳ Syncing Articles...`;
-      statusBox.innerHTML = `<div class="status-badge loading">Fetching and parsing Google Sheet data...</div>`;
+      syncBtn.innerHTML = `⏳ Refreshing from Google Sheet...`;
+      statusBox.innerHTML = `<div class="status-badge loading">Fetching live rows from Google Sheet...</div>`;
 
       const articles = await window.NewsSync.syncFromGoogleSheet(url);
 
       statusBox.innerHTML = `
         <div class="status-badge success">
-          ✓ Successfully synced <strong>${articles.length}</strong> news articles from Google Sheet!
+          ✓ Successfully loaded <strong>${articles.length}</strong> live articles from Google Sheet!
         </div>
       `;
 
       window.NewsRenderer.refreshCurrentView();
-      window.NewsRenderer.showToast(`Synced ${articles.length} articles from Google Sheet!`, 'success');
+      window.NewsRenderer.showToast(`Updated ${articles.length} articles from Google Sheet!`, 'success');
 
       setTimeout(() => {
         this.closeSyncModal();
@@ -272,144 +261,21 @@ class NewsAppUI {
       `;
     } finally {
       syncBtn.disabled = false;
-      syncBtn.innerHTML = `📥 Sync Google Sheet Now`;
+      syncBtn.innerHTML = `🔄 Refresh from Google Sheet`;
     }
   }
 
-  // 2. Trigger N8N Webhook Sync
-  async handleN8NWebhookSync() {
-    const input = document.getElementById('webhookUrlInput');
-    const statusBox = document.getElementById('n8nSyncStatus');
-    const syncBtn = document.getElementById('n8nSyncBtn');
-    if (!input || !statusBox || !syncBtn) return;
-
-    const url = input.value.trim();
-    if (!url) {
-      statusBox.innerHTML = `<div class="status-badge error">Please enter an N8N Webhook endpoint URL.</div>`;
-      return;
-    }
-
-    try {
-      syncBtn.disabled = true;
-      syncBtn.innerHTML = `⏳ Connecting to N8N...`;
-      statusBox.innerHTML = `<div class="status-badge loading">Querying N8N workflow webhook...</div>`;
-
-      const articles = await window.NewsSync.syncFromN8NWebhook(url);
-
-      statusBox.innerHTML = `
-        <div class="status-badge success">
-          ✓ Successfully pulled <strong>${articles.length}</strong> news articles from N8N!
-        </div>
-      `;
-
-      window.NewsRenderer.refreshCurrentView();
-      window.NewsRenderer.showToast(`Pulled ${articles.length} news articles from N8N pipeline!`, 'success');
-
-      setTimeout(() => {
-        this.closeSyncModal();
-      }, 1200);
-
-    } catch (err) {
-      statusBox.innerHTML = `
-        <div class="status-badge error">
-          ⚠️ N8N sync failed: ${window.NewsRenderer.escapeHtml(err.message)}
-        </div>
-      `;
-    } finally {
-      syncBtn.disabled = false;
-      syncBtn.innerHTML = `⚡ Sync from N8N Pipeline`;
-    }
-  }
-
-  // 3. Test Raw HTML Scraper Regex Playground
-  handleRunRegexScraper() {
-    const input = document.getElementById('rawHtmlInput');
-    const previewContainer = document.getElementById('scraperResultsPreview');
-    const importBtn = document.getElementById('importScrapedBtn');
-    if (!input || !previewContainer) return;
-
-    const rawHtml = input.value.trim();
-    if (!rawHtml) {
-      previewContainer.innerHTML = `<div class="status-badge error">Please paste some HTML content to test the scraper regex.</div>`;
-      return;
-    }
-
-    const results = window.NewsSync.parseHtmlUsingRegex(rawHtml);
-    this.cachedScrapedResults = results;
-
-    if (results.length === 0) {
-      previewContainer.innerHTML = `
-        <div class="status-badge error">
-          ⚠️ No matching articles found. Ensure the HTML contains headlines matching:<br>
-          <code>&lt;h3 class="title..."&gt;&lt;a href="URL"&gt;HEADLINE&lt;/a&gt;&lt;/h3&gt;</code>
-        </div>
-      `;
-      if (importBtn) importBtn.style.display = 'none';
-      return;
-    }
-
-    let previewHtml = `
-      <div class="status-badge success">
-        ✓ Extracted <strong>${results.length}</strong> articles using regex parser!
-      </div>
-      <div class="scraped-results-list">
-    `;
-
-    results.slice(0, 5).forEach((item, i) => {
-      previewHtml += `
-        <div class="scraped-item-preview">
-          <span class="preview-num">#${i + 1}</span>
-          <div class="preview-details">
-            <strong>${window.NewsRenderer.escapeHtml(item.Headline)}</strong>
-            <div class="preview-meta">
-              <span>✍️ ${window.NewsRenderer.escapeHtml(item.Author)}</span>
-              <span>🏷️ ${item.Category}</span>
-              <span>🔗 <a href="${item['Article URL']}" target="_blank">Source Link</a></span>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-
-    if (results.length > 5) {
-      previewHtml += `<div class="preview-more">+ ${results.length - 5} more articles found</div>`;
-    }
-
-    previewHtml += `</div>`;
-    previewContainer.innerHTML = previewHtml;
-
-    if (importBtn) {
-      importBtn.style.display = 'inline-flex';
-      importBtn.textContent = `📥 Import ${results.length} Scraped Articles to Feed`;
-    }
-  }
-
-  // Import Scraped articles into main news storage
-  importScrapedArticles() {
-    if (!this.cachedScrapedResults || this.cachedScrapedResults.length === 0) return;
-
-    const existing = window.NewsSync.getAllArticles();
-    const merged = [...this.cachedScrapedResults, ...existing];
-    window.NewsSync.saveArticles(merged);
-
+  // Reset to default dataset
+  handleResetDefaults() {
+    window.NewsSync.resetToDefaults();
     window.NewsRenderer.refreshCurrentView();
-    window.NewsRenderer.showToast(`Imported ${this.cachedScrapedResults.length} articles to main news feed!`, 'success');
+    window.NewsRenderer.showToast('Reset to original Google Sheet dataset', 'info');
     this.closeSyncModal();
   }
 
-  // Reset to default sample dataset
-  handleResetDefaults() {
-    if (confirm('Reset news feed back to the original pre-loaded curated articles?')) {
-      window.NewsSync.resetToDefaults();
-      window.NewsRenderer.refreshCurrentView();
-      window.NewsRenderer.showToast('Reset to default news dataset', 'info');
-      this.closeSyncModal();
-    }
-  }
-
-  // Image fallback handler (generates category specific fallback)
+  // Image fallback handler
   handleImageFallback(imgElement, category = 'General') {
-    imgElement.onerror = null; // prevent infinite loops
+    imgElement.onerror = null;
     imgElement.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80';
     imgElement.classList.add('fallback-loaded');
   }
@@ -422,7 +288,6 @@ class NewsAppUI {
   }
 }
 
-// Instantiate on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   window.NewsUI = new NewsAppUI();
 });

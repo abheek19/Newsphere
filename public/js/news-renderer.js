@@ -6,22 +6,22 @@ class NewsRenderer {
   constructor() {
     this.currentCategory = 'all';
     this.searchQuery = '';
-    this.sortBy = 'latest'; // 'latest' | 'oldest' | 'author' | 'headline'
+    this.sortBy = 'latest'; // 'latest' | 'author' | 'headline'
     this.currentViewMode = 'magazine'; // 'magazine' | 'categories' | 'compact'
-    this.bookmarksKey = 'newssphere_bookmarks_v1';
+    this.bookmarksKey = 'newssphere_bookmarks_v2';
     this.speechUtterance = null;
     this.isSpeaking = false;
-    this.fontSizeLevel = 1; // 0 = small, 1 = normal, 2 = large
 
     this.categoryMeta = {
       'all': { label: 'All Headlines', icon: '📰', color: '#dc2626' },
-      'Political: National': { label: 'National Politics', icon: '🏛️', color: '#2563eb' },
-      'Political: International': { label: 'International Politics', icon: '🌐', color: '#7c3aed' },
+      'Political: National': { label: 'National Politics & City', icon: '🏛️', color: '#2563eb' },
+      'Political: International': { label: 'International Affairs', icon: '🌐', color: '#7c3aed' },
       'Sports': { label: 'Sports', icon: '⚽', color: '#059669' },
-      'Entertainment': { label: 'Entertainment', icon: '🎬', color: '#db2777' },
-      'Science & Tech': { label: 'Science & Tech', icon: '🚀', color: '#0284c7' },
-      'Business & Economy': { label: 'Business & Economy', icon: '💼', color: '#d97706' },
-      'Climate & World': { label: 'Climate & World', icon: '🌍', color: '#16a34a' }
+      'Entertainment': { label: 'Entertainment & Cinema', icon: '🎬', color: '#db2777' },
+      'Science & Tech': { label: 'Science & Health', icon: '🚀', color: '#0284c7' },
+      'Books & Education': { label: 'Books & Education', icon: '📚', color: '#ea580c' },
+      'Lifestyle & Food': { label: 'Lifestyle & Culture', icon: '🍽️', color: '#16a34a' },
+      'General News': { label: 'Special Dispatches', icon: '📌', color: '#475569' }
     };
   }
 
@@ -72,7 +72,7 @@ class NewsRenderer {
     });
   }
 
-  // Get articles filtered by current active category, search term, and sorting
+  // Filter articles
   getFilteredArticles() {
     const all = window.NewsSync.getAllArticles();
     let filtered = all.filter(article => {
@@ -91,8 +91,7 @@ class NewsRenderer {
         const matchHeadline = (article.Headline || '').toLowerCase().includes(q);
         const matchAuthor = (article.Author || '').toLowerCase().includes(q);
         const matchCategory = (article.Category || '').toLowerCase().includes(q);
-        const matchSummary = (article.Summary || '').toLowerCase().includes(q);
-        return matchHeadline || matchAuthor || matchCategory || matchSummary;
+        return matchHeadline || matchAuthor || matchCategory;
       }
 
       return true;
@@ -100,8 +99,6 @@ class NewsRenderer {
 
     // Sorting
     filtered.sort((a, b) => {
-      if (this.sortBy === 'latest') return new Date(b.Date || 0) - new Date(a.Date || 0);
-      if (this.sortBy === 'oldest') return new Date(a.Date || 0) - new Date(b.Date || 0);
       if (this.sortBy === 'author') return (a.Author || '').localeCompare(b.Author || '');
       if (this.sortBy === 'headline') return (a.Headline || '').localeCompare(b.Headline || '');
       return 0;
@@ -110,29 +107,29 @@ class NewsRenderer {
     return filtered;
   }
 
-  // Render the Breaking News Ticker in the header
+  // Render Breaking Ticker
   renderTicker() {
     const tickerTrack = document.getElementById('tickerTrack');
     if (!tickerTrack) return;
 
-    const all = window.NewsSync.getAllArticles().slice(0, 8);
+    const all = window.NewsSync.getAllArticles().slice(0, 10);
     if (all.length === 0) {
-      tickerTrack.innerHTML = `<span class="ticker-item">Live Global Feed Connected • Stay Updated 24/7</span>`;
+      tickerTrack.innerHTML = `<span class="ticker-item">Live Google Sheet News Wire Connected</span>`;
       return;
     }
 
     const itemsHtml = all.map(a => `
       <div class="ticker-item" onclick="window.NewsUI.openReaderModal('${a.id}')">
-        <span class="ticker-tag">${a.Category || 'BREAKING'}</span>
+        <span class="ticker-tag">${a.Category || 'HEADLINE'}</span>
         <span class="ticker-text">${this.escapeHtml(a.Headline)}</span>
         <span class="ticker-author">by ${this.escapeHtml(a.Author || 'News Desk')}</span>
       </div>
     `).join(' <span class="ticker-sep">✦</span> ');
 
-    tickerTrack.innerHTML = itemsHtml + ' <span class="ticker-sep">✦</span> ' + itemsHtml; // duplicated for smooth loop
+    tickerTrack.innerHTML = itemsHtml + ' <span class="ticker-sep">✦</span> ' + itemsHtml;
   }
 
-  // Render Category Navigation Pills with article counters
+  // Render Category Navigation Pills with article counts
   renderCategoryPills() {
     const container = document.getElementById('categoryPillsContainer');
     if (!container) return;
@@ -145,8 +142,9 @@ class NewsRenderer {
       'Sports',
       'Entertainment',
       'Science & Tech',
-      'Business & Economy',
-      'Climate & World'
+      'Books & Education',
+      'Lifestyle & Food',
+      'General News'
     ];
 
     const html = categories.map(catKey => {
@@ -159,6 +157,8 @@ class NewsRenderer {
       } else {
         count = allArticles.filter(a => (a.Category || '').toLowerCase().includes(catKey.toLowerCase())).length;
       }
+
+      if (count === 0 && catKey !== 'all') return '';
 
       return `
         <button class="cat-pill-btn ${isActive ? 'active' : ''}" 
@@ -174,7 +174,7 @@ class NewsRenderer {
     container.innerHTML = html;
   }
 
-  // Render Main Content according to active view mode
+  // Render Main News Content
   renderMainContent() {
     const container = document.getElementById('newsMainContainer');
     if (!container) return;
@@ -186,13 +186,10 @@ class NewsRenderer {
         <div class="empty-state-card">
           <div class="empty-icon">🔍</div>
           <h3>No matching news articles found</h3>
-          <p>Try refining your search query or selecting a different news category.</p>
+          <p>Try refining your search query or selecting a different category from the top bar.</p>
           <div class="empty-actions">
-            <button class="btn btn-secondary" onclick="window.NewsUI.clearSearchAndFilters()">
+            <button class="btn btn-primary" onclick="window.NewsUI.clearSearchAndFilters()">
               Clear Filters
-            </button>
-            <button class="btn btn-primary" onclick="window.NewsUI.openSyncModal()">
-              📥 Sync Live Google Sheet / N8N
             </button>
           </div>
         </div>
@@ -209,7 +206,7 @@ class NewsRenderer {
     }
   }
 
-  // 1. Magazine / Editorial Layout
+  // 1. Magazine Layout
   renderMagazineLayout(container, articles) {
     const featured = articles[0];
     const topPicks = articles.slice(1, 4);
@@ -227,23 +224,22 @@ class NewsRenderer {
               <span class="badge-category" style="background:${this.getCategoryColor(featured.Category)}">
                 ${featured.Category || 'Lead Story'}
               </span>
-              <span class="badge-read">${featured.ReadTime || '4 min'}</span>
+              <span class="badge-read">${featured.ReadTime || '3 min'}</span>
             </div>
           </div>
           <div class="hero-content">
-            <span class="hero-kicker">🔥 Top Story of the Day</span>
+            <span class="hero-kicker">🔥 Top Story</span>
             <h2 class="hero-headline">${this.escapeHtml(featured.Headline)}</h2>
-            <p class="hero-summary">${this.escapeHtml(featured.Summary || '')}</p>
             <div class="card-byline">
               <div class="author-avatar">${this.getAuthorInitials(featured.Author)}</div>
               <div class="author-info">
-                <span class="author-name">By ${this.escapeHtml(featured.Author || 'News Desk')}</span>
-                <span class="article-date">${featured.Date || 'Today'} • ${featured.Source || 'Apex News'}</span>
+                <span class="author-name">By ${this.escapeHtml(featured.Author || 'The Hindu Bureau')}</span>
+                <span class="article-date">Published Today • ${featured.Source || 'Google Sheet Feed'}</span>
               </div>
             </div>
             <div class="hero-action-bar" onclick="event.stopPropagation()">
               <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
-                Read Full Source ↗
+                Visit Original Article ↗
               </a>
               <button class="btn btn-sm btn-outline" onclick="window.NewsUI.openReaderModal('${featured.id}')">
                 📖 Quick Reader
@@ -269,8 +265,8 @@ class NewsRenderer {
       </section>
 
       <div class="section-divider">
-        <h3 class="section-title">📰 All Latest Dispatches (${articles.length})</h3>
-        <span class="section-subtitle">Real-time reports sorted by relevance and publication</span>
+        <h3 class="section-title">📰 Complete Coverage Dispatches (${articles.length} Stories)</h3>
+        <span class="section-subtitle">Real-time reports directly loaded from Google Sheet</span>
       </div>
 
       <div class="news-cards-grid">
@@ -281,7 +277,7 @@ class NewsRenderer {
     container.innerHTML = html;
   }
 
-  // 2. Grouped Category Swimlanes Layout
+  // 2. Grouped Category Swimlanes
   renderGroupedCategoriesLayout(container, articles) {
     const categories = [
       'Political: National',
@@ -289,13 +285,12 @@ class NewsRenderer {
       'Sports',
       'Entertainment',
       'Science & Tech',
-      'Business & Economy',
-      'Climate & World'
+      'Books & Education',
+      'Lifestyle & Food',
+      'General News'
     ];
 
-    let html = `
-      <div class="categories-view-wrapper">
-    `;
+    let html = `<div class="categories-view-wrapper">`;
 
     categories.forEach(catName => {
       const catArticles = articles.filter(a => (a.Category || '').toLowerCase().includes(catName.toLowerCase()));
@@ -310,11 +305,11 @@ class NewsRenderer {
               <span class="swimlane-icon" style="background:${meta.color}20; color:${meta.color}">${meta.icon}</span>
               <div>
                 <h3 class="swimlane-title">${meta.label}</h3>
-                <span class="swimlane-count">${catArticles.length} active coverage stories</span>
+                <span class="swimlane-count">${catArticles.length} stories in this section</span>
               </div>
             </div>
             <button class="btn btn-sm btn-ghost" onclick="window.NewsUI.setCategory('${catName}')">
-              View All ${meta.label} →
+              View All ${meta.label} (${catArticles.length}) →
             </button>
           </div>
 
@@ -329,7 +324,7 @@ class NewsRenderer {
     container.innerHTML = html;
   }
 
-  // 3. Standard Grid / Filter Layout
+  // 3. Standard Grid View
   renderStandardGridLayout(container, articles) {
     const isCompact = this.currentViewMode === 'compact';
     const gridClass = isCompact ? 'news-cards-compact-feed' : 'news-cards-grid';
@@ -341,11 +336,11 @@ class NewsRenderer {
         <div class="filter-results-header">
           <div>
             <h2>${catMeta.icon} ${catMeta.label}</h2>
-            <p>${articles.length} article${articles.length === 1 ? '' : 's'} available ${this.searchQuery ? `matching "${this.escapeHtml(this.searchQuery)}"` : ''}</p>
+            <p>${articles.length} article${articles.length === 1 ? '' : 's'} found from Google Sheet ${this.searchQuery ? `matching "${this.escapeHtml(this.searchQuery)}"` : ''}</p>
           </div>
           ${this.searchQuery || this.currentCategory !== 'all' ? `
             <button class="btn btn-sm btn-secondary" onclick="window.NewsUI.clearSearchAndFilters()">
-              ✕ Reset to All News
+              ✕ Reset to All Stories
             </button>
           ` : ''}
         </div>
@@ -362,7 +357,7 @@ class NewsRenderer {
     `;
   }
 
-  // Render Single Standard News Card
+  // Card HTML
   renderCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
@@ -384,16 +379,13 @@ class NewsRenderer {
           <h4 class="card-title" title="${this.escapeHtml(article.Headline)}">
             ${this.highlightQuery(article.Headline)}
           </h4>
-          <p class="card-excerpt">
-            ${this.highlightQuery(article.Summary || article.Headline)}
-          </p>
 
           <div class="card-footer">
             <div class="card-byline">
               <div class="author-avatar">${this.getAuthorInitials(article.Author)}</div>
               <div class="author-info">
-                <span class="author-name">${this.highlightQuery(article.Author || 'News Desk')}</span>
-                <span class="article-date">${article.Date || 'Today'} • ${article.Source || 'Apex'}</span>
+                <span class="author-name">${this.highlightQuery(article.Author || 'The Hindu Bureau')}</span>
+                <span class="article-date">Google Sheet Feed</span>
               </div>
             </div>
 
@@ -402,7 +394,7 @@ class NewsRenderer {
                  target="_blank" 
                  rel="noopener noreferrer" 
                  class="btn-icon external-link-btn" 
-                 title="Open Original Article in New Tab">
+                 title="Open Original Article Link in New Tab">
                 ↗
               </a>
               <button class="btn-icon bookmark-btn ${isSaved ? 'bookmarked' : ''}" 
@@ -422,7 +414,7 @@ class NewsRenderer {
     `;
   }
 
-  // Render Compact Feed Card
+  // Compact Card HTML
   renderCompactCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
@@ -440,11 +432,10 @@ class NewsRenderer {
             <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
               ${article.Category || 'News'}
             </span>
-            <span class="compact-date">${article.Date || 'Today'}</span>
             <span class="compact-read">${article.ReadTime || '3 min'}</span>
           </div>
           <h4 class="compact-title">${this.highlightQuery(article.Headline)}</h4>
-          <span class="compact-author">By <strong>${this.highlightQuery(article.Author || 'News Desk')}</strong></span>
+          <span class="compact-author">By <strong>${this.highlightQuery(article.Author || 'The Hindu Bureau')}</strong></span>
         </div>
         <div class="compact-actions" onclick="event.stopPropagation()">
           <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Original Link">
@@ -458,7 +449,7 @@ class NewsRenderer {
     `;
   }
 
-  // Render Trending Side Card
+  // Trending Card HTML
   renderTrendingCardHtml(article) {
     const catColor = this.getCategoryColor(article.Category);
 
@@ -475,13 +466,13 @@ class NewsRenderer {
             ${article.Category || 'Trending'}
           </span>
           <h4 class="trending-title">${this.escapeHtml(article.Headline)}</h4>
-          <span class="trending-author">By ${this.escapeHtml(article.Author || 'News Desk')} • ${article.ReadTime || '3 min'}</span>
+          <span class="trending-author">By ${this.escapeHtml(article.Author || 'The Hindu Bureau')}</span>
         </div>
       </div>
     `;
   }
 
-  // Render Saved Bookmarks in Slide-Over Drawer
+  // Bookmarks Drawer
   renderBookmarksDrawer() {
     const container = document.getElementById('bookmarksList');
     if (!container) return;
@@ -492,8 +483,8 @@ class NewsRenderer {
       container.innerHTML = `
         <div class="empty-bookmarks">
           <div class="empty-icon">🔖</div>
-          <h4>No Saved Articles Yet</h4>
-          <p>Click the star (☆) icon on any news card to save articles for quick access anytime.</p>
+          <h4>No Saved Articles</h4>
+          <p>Click the star (☆) icon on any news card to save articles for quick reading.</p>
         </div>
       `;
       return;
@@ -505,7 +496,7 @@ class NewsRenderer {
         <div class="bookmark-item-info">
           <span class="badge-category-mini">${a.Category || 'News'}</span>
           <h5>${this.escapeHtml(a.Headline)}</h5>
-          <span class="bookmark-byline">By ${this.escapeHtml(a.Author || 'News Desk')}</span>
+          <span class="bookmark-byline">By ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
         </div>
         <button class="btn-icon delete-bookmark-btn" 
                 title="Remove" 
@@ -516,7 +507,7 @@ class NewsRenderer {
     `).join('');
   }
 
-  // Reader Modal Functionality with Speech Reader
+  // Reader Modal
   openReaderModal(articleId) {
     const all = window.NewsSync.getAllArticles();
     const article = all.find(a => a.id === articleId);
@@ -529,23 +520,22 @@ class NewsRenderer {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
 
-    // Stop existing speech if any
     this.stopSpeech();
 
     content.innerHTML = `
       <div class="reader-header">
         <div class="reader-meta-bar">
           <span class="badge-category" style="background:${catColor}">${article.Category || 'News'}</span>
-          <span class="reader-date">Published ${article.Date || 'Recently'}</span>
-          <span class="reader-readtime">⏱️ ${article.ReadTime || '4 min read'}</span>
+          <span class="reader-date">From Google Sheet Feed</span>
+          <span class="reader-readtime">⏱️ ${article.ReadTime || '3 min read'}</span>
         </div>
         <h1 class="reader-headline">${this.escapeHtml(article.Headline)}</h1>
         
         <div class="reader-author-strip">
           <div class="author-avatar reader-avatar-lg">${this.getAuthorInitials(article.Author)}</div>
           <div>
-            <div class="reader-author-name">Reporting by <strong>${this.escapeHtml(article.Author || 'News Desk')}</strong></div>
-            <div class="reader-source-tag">Source: ${this.escapeHtml(article.Source || 'Global News Network')}</div>
+            <div class="reader-author-name">By <strong>${this.escapeHtml(article.Author || 'The Hindu Bureau')}</strong></div>
+            <div class="reader-source-tag">Source: ${this.escapeHtml(article.Source || 'Google Sheet Feed')}</div>
           </div>
           
           <div class="reader-controls">
@@ -568,47 +558,34 @@ class NewsRenderer {
         <img src="${this.escapeHtml(article['Image URL'])}" 
              alt="${this.escapeHtml(article.Headline)}"
              onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')">
-        <div class="reader-image-caption">Image via ${article.Source || 'News Wire Service'} • Editorial Archive</div>
+        <div class="reader-image-caption">Image via ${article.Source || 'Editorial News Wire'}</div>
       </div>
 
-      <div class="reader-article-content font-size-normal" id="readerArticleContent">
+      <div class="reader-article-content font-size-normal">
         <p class="reader-lead">
-          <strong>${this.escapeHtml(article.Headline.split(' ')[0] || 'REPORT')}</strong> — ${this.escapeHtml(article.Summary || article.Headline)}
+          ${this.escapeHtml(article.Headline)}
         </p>
         <p>
-          Correspondents report extensive development regarding this ongoing coverage. Key stakeholders have voiced diverse perspectives, signaling critical policy and socioeconomic considerations moving forward.
+          This verified story is sourced directly from the connected Google Sheet data repository and categorized under <strong>${this.escapeHtml(article.Category || 'General')}</strong>.
         </p>
-        <p>
-          "This marks a decisive transition point in our strategic evaluation," stated senior industry and governance observers. "The data clearly indicates that proactive measures are yielding measurable results across multiple regional indicators."
-        </p>
-        <div class="reader-callout">
-          <h4>📌 Key Highlights</h4>
-          <ul>
-            <li>Verified investigative report filed by <strong>${this.escapeHtml(article.Author || 'News Desk')}</strong>.</li>
-            <li>Category Classification: <strong>${this.escapeHtml(article.Category || 'General')}</strong>.</li>
-            <li>Direct live coverage archived on primary editorial server.</li>
-          </ul>
-        </div>
       </div>
 
       <div class="reader-bottom-cta">
         <div>
-          <h4>Want to read the full original unedited story?</h4>
-          <p>Visit the official publisher source page to explore complete interviews and multimedia.</p>
+          <h4>Read the complete original article?</h4>
+          <p>Click below to jump directly to the official publication link.</p>
         </div>
         <a href="${this.escapeHtml(article['Article URL'])}" 
            target="_blank" 
            rel="noopener noreferrer" 
            class="btn btn-primary btn-lg">
-          Visit Original Article Page ↗
+          Visit Original Article Link ↗
         </a>
       </div>
     `;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-
-    // Store active article for speech
     this.activeReaderArticle = article;
   }
 
@@ -619,7 +596,6 @@ class NewsRenderer {
     this.stopSpeech();
   }
 
-  // Text-To-Speech Synthesis
   toggleSpeech() {
     if (this.isSpeaking) {
       this.stopSpeech();
@@ -631,10 +607,9 @@ class NewsRenderer {
       return;
     }
 
-    const text = `${this.activeReaderArticle.Headline}. Reporting by ${this.activeReaderArticle.Author || 'our news desk'}. ${this.activeReaderArticle.Summary || ''}`;
+    const text = `${this.activeReaderArticle.Headline}. Reporting by ${this.activeReaderArticle.Author || 'our news desk'}.`;
     this.speechUtterance = new SpeechSynthesisUtterance(text);
     this.speechUtterance.rate = 1.0;
-    this.speechUtterance.pitch = 1.0;
 
     this.speechUtterance.onstart = () => {
       this.isSpeaking = true;
@@ -646,15 +621,6 @@ class NewsRenderer {
     };
 
     this.speechUtterance.onend = () => {
-      this.isSpeaking = false;
-      const btn = document.getElementById('ttsBtn');
-      if (btn) {
-        btn.innerHTML = '🔊 Listen';
-        btn.classList.remove('speaking');
-      }
-    };
-
-    this.speechUtterance.onerror = () => {
       this.isSpeaking = false;
       const btn = document.getElementById('ttsBtn');
       if (btn) {
@@ -678,43 +644,33 @@ class NewsRenderer {
     }
   }
 
-  // Share Modal / Clipboard
   async shareArticle(articleId) {
     const all = window.NewsSync.getAllArticles();
     const article = all.find(a => a.id === articleId);
     if (!article) return;
 
-    const shareData = {
-      title: article.Headline,
-      text: `${article.Headline} (by ${article.Author || 'News Desk'})`,
-      url: article['Article URL'] || window.location.href
-    };
-
+    const url = article['Article URL'] || window.location.href;
     if (navigator.share) {
       try {
-        await navigator.share(shareData);
+        await navigator.share({ title: article.Headline, url });
         return;
-      } catch (err) {
-        // user dismissed or not allowed, fallback to clipboard
-      }
+      } catch (e) {}
     }
-
     try {
-      await navigator.clipboard.writeText(shareData.url);
+      await navigator.clipboard.writeText(url);
       this.showToast('Article URL copied to clipboard!', 'success');
     } catch (e) {
-      prompt('Copy article URL:', shareData.url);
+      prompt('Copy article URL:', url);
     }
   }
 
-  // Helpers
   getCategoryColor(category = '') {
     const match = Object.keys(this.categoryMeta).find(k => k.toLowerCase() === category.toLowerCase());
     return match ? this.categoryMeta[match].color : '#64748b';
   }
 
   getAuthorInitials(author = '') {
-    if (!author) return 'ND';
+    if (!author) return 'HB';
     const parts = author.trim().split(/\s+/);
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
