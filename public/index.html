@@ -63,11 +63,6 @@
 
         <!-- Header Actions -->
         <div class="header-actions-group">
-          <!-- Refresh from Google Sheet Button -->
-          <button class="btn btn-sm btn-primary" id="openSyncModalBtn" onclick="window.NewsUI.openSyncModal()" title="View Google Sheet Connection & Refresh">
-            <span>🔄</span> Sheet Sync
-          </button>
-
           <!-- Bookmarks Button -->
           <button class="btn-icon" id="bookmarksToggleBtn" onclick="window.NewsUI.toggleBookmarksDrawer()" title="Saved Articles (Press B)">
             <span>🔖</span>
@@ -254,8 +249,7 @@
         <div class="footer-col">
           <h4>Data Source</h4>
           <ul class="footer-links">
-            <li><a href="https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing" target="_blank">Google Sheet Source ↗</a></li>
-            <li><a href="javascript:void(0)" onclick="window.NewsUI.openSyncModal()">Live Sheet Sync Hub</a></li>
+            <li><a href="https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/edit?usp=sharing" target="_blank">Google Sheet Database ↗</a></li>
             <li><a href="/api/news" target="_blank">REST API Endpoint (/api/news)</a></li>
           </ul>
         </div>
