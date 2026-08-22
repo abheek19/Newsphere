@@ -1,5 +1,6 @@
 /**
  * NewsRenderer - Handles UI rendering, Category grouping, Card views, Reader Modal, Bookmarks, and Interactions.
+ * Every article element links directly to the actual external Article URL on the original website.
  */
 
 class NewsRenderer {
@@ -8,7 +9,7 @@ class NewsRenderer {
     this.searchQuery = '';
     this.sortBy = 'latest'; // 'latest' | 'author' | 'headline'
     this.currentViewMode = 'magazine'; // 'magazine' | 'categories' | 'compact'
-    this.bookmarksKey = 'newssphere_bookmarks_v2';
+    this.bookmarksKey = 'newssphere_bookmarks_v3';
     this.speechUtterance = null;
     this.isSpeaking = false;
 
@@ -23,6 +24,16 @@ class NewsRenderer {
       'Lifestyle & Food': { label: 'Lifestyle & Culture', icon: '🍽️', color: '#16a34a' },
       'General News': { label: 'Special Dispatches', icon: '📌', color: '#475569' }
     };
+  }
+
+  // Open original article directly in a new tab
+  openArticleUrl(url) {
+    if (!url || url === '#') {
+      this.showToast('Article URL not available', 'error');
+      return;
+    }
+    const targetUrl = url.startsWith('http') ? url : `https://${url.replace(/^\/\//, '')}`;
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
   }
 
   // Bookmarks Management
@@ -53,7 +64,7 @@ class NewsRenderer {
       this.showToast('Article removed from bookmarks', 'info');
     } else {
       bookmarks.unshift(article);
-      this.showToast('Article saved to your bookmarks!', 'success');
+      this.showToast('Article saved to bookmarks!', 'success');
     }
 
     localStorage.setItem(this.bookmarksKey, JSON.stringify(bookmarks));
@@ -76,7 +87,6 @@ class NewsRenderer {
   getFilteredArticles() {
     const all = window.NewsSync.getAllArticles();
     let filtered = all.filter(article => {
-      // Category check
       if (this.currentCategory !== 'all') {
         const catA = (article.Category || '').toLowerCase();
         const catB = this.currentCategory.toLowerCase();
@@ -85,7 +95,6 @@ class NewsRenderer {
         }
       }
 
-      // Search check
       if (this.searchQuery.trim()) {
         const q = this.searchQuery.toLowerCase().trim();
         const matchHeadline = (article.Headline || '').toLowerCase().includes(q);
@@ -97,7 +106,6 @@ class NewsRenderer {
       return true;
     });
 
-    // Sorting
     filtered.sort((a, b) => {
       if (this.sortBy === 'author') return (a.Author || '').localeCompare(b.Author || '');
       if (this.sortBy === 'headline') return (a.Headline || '').localeCompare(b.Headline || '');
@@ -119,17 +127,18 @@ class NewsRenderer {
     }
 
     const itemsHtml = all.map(a => `
-      <div class="ticker-item" onclick="window.NewsUI.openReaderModal('${a.id}')">
+      <div class="ticker-item" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(a['Article URL'])}')">
         <span class="ticker-tag">${a.Category || 'HEADLINE'}</span>
         <span class="ticker-text">${this.escapeHtml(a.Headline)}</span>
-        <span class="ticker-author">by ${this.escapeHtml(a.Author || 'News Desk')}</span>
+        <span class="ticker-author">by ${this.escapeHtml(a.Author || 'The Hindu Bureau')}</span>
+        <span class="ticker-link-hint">↗</span>
       </div>
     `).join(' <span class="ticker-sep">✦</span> ');
 
     tickerTrack.innerHTML = itemsHtml + ' <span class="ticker-sep">✦</span> ' + itemsHtml;
   }
 
-  // Render Category Navigation Pills with article counts
+  // Render Category Navigation Pills
   renderCategoryPills() {
     const container = document.getElementById('categoryPillsContainer');
     if (!container) return;
@@ -214,8 +223,8 @@ class NewsRenderer {
 
     let html = `
       <section class="editorial-hero-section">
-        <div class="hero-primary-card">
-          <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="hero-image-wrap" title="Read full article on original website">
+        <div class="hero-primary-card" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(featured['Article URL'])}')">
+          <div class="hero-image-wrap">
             <img src="${this.escapeHtml(featured['Image URL'])}" 
                  alt="${this.escapeHtml(featured.Headline)}"
                  onerror="window.NewsUI.handleImageFallback(this, '${featured.Category}')"
@@ -226,11 +235,16 @@ class NewsRenderer {
               </span>
               <span class="badge-read">${featured.ReadTime || '3 min'}</span>
             </div>
-          </a>
+          </div>
           <div class="hero-content">
-            <span class="hero-kicker">🔥 Top Story</span>
+            <span class="hero-kicker">🔥 Top Story • Click to Read Article</span>
             <h2 class="hero-headline">
-              <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link" title="Open full story">
+              <a href="${this.escapeHtml(featured['Article URL'])}" 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 class="headline-link" 
+                 onclick="event.stopPropagation();" 
+                 title="Open article on actual website">
                 ${this.escapeHtml(featured.Headline)}
               </a>
             </h2>
@@ -241,8 +255,11 @@ class NewsRenderer {
                 <span class="article-date">Google Sheet Verified Source</span>
               </div>
             </div>
-            <div class="hero-action-bar">
-              <a href="${this.escapeHtml(featured['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary">
+            <div class="hero-action-bar" onclick="event.stopPropagation()">
+              <a href="${this.escapeHtml(featured['Article URL'])}" 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 class="btn btn-sm btn-primary">
                 Read Full Article ↗
               </a>
               <button class="btn btn-sm btn-outline" onclick="window.NewsUI.openReaderModal('${featured.id}')" title="Quick Voice & Preview Reader">
@@ -270,7 +287,7 @@ class NewsRenderer {
 
       <div class="section-divider">
         <h3 class="section-title">📰 Complete Coverage Dispatches (${articles.length} Stories)</h3>
-        <span class="section-subtitle">Real-time reports directly loaded from Google Sheet</span>
+        <span class="section-subtitle">Click any headline or image to open the actual news article</span>
       </div>
 
       <div class="news-cards-grid">
@@ -340,7 +357,7 @@ class NewsRenderer {
         <div class="filter-results-header">
           <div>
             <h2>${catMeta.icon} ${catMeta.label}</h2>
-            <p>${articles.length} article${articles.length === 1 ? '' : 's'} found from Google Sheet ${this.searchQuery ? `matching "${this.escapeHtml(this.searchQuery)}"` : ''}</p>
+            <p>${articles.length} article${articles.length === 1 ? '' : 's'} found ${this.searchQuery ? `matching "${this.escapeHtml(this.searchQuery)}"` : ''}</p>
           </div>
           ${this.searchQuery || this.currentCategory !== 'all' ? `
             <button class="btn btn-sm btn-secondary" onclick="window.NewsUI.clearSearchAndFilters()">
@@ -361,18 +378,15 @@ class NewsRenderer {
     `;
   }
 
-  // Card HTML
+  // Card HTML - Clicking card, image, headline, or button opens actual article URL
   renderCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
+    const articleUrl = this.escapeHtml(article['Article URL']);
 
     return `
-      <article class="news-card" data-id="${article.id}">
-        <a href="${this.escapeHtml(article['Article URL'])}" 
-           target="_blank" 
-           rel="noopener noreferrer" 
-           class="card-image-wrap" 
-           title="Open original article in new tab">
+      <article class="news-card" data-id="${article.id}" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
+        <div class="card-image-wrap">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
@@ -381,15 +395,16 @@ class NewsRenderer {
             <span class="badge-category" style="background:${catColor}">${article.Category || 'News'}</span>
             <span class="badge-read">${article.ReadTime || '3 min'}</span>
           </div>
-        </a>
+        </div>
 
         <div class="card-body">
           <h4 class="card-title">
-            <a href="${this.escapeHtml(article['Article URL'])}" 
+            <a href="${articleUrl}" 
                target="_blank" 
                rel="noopener noreferrer" 
                class="headline-link"
-               title="${this.escapeHtml(article.Headline)}">
+               onclick="event.stopPropagation();"
+               title="Open full article on publisher site">
               ${this.highlightQuery(article.Headline)}
             </a>
           </h4>
@@ -399,12 +414,12 @@ class NewsRenderer {
               <div class="author-avatar">${this.getAuthorInitials(article.Author)}</div>
               <div class="author-info">
                 <span class="author-name">${this.highlightQuery(article.Author || 'The Hindu Bureau')}</span>
-                <span class="article-date">Google Sheet Feed</span>
+                <span class="article-date">Google Sheet Source</span>
               </div>
             </div>
 
-            <div class="card-actions">
-              <a href="${this.escapeHtml(article['Article URL'])}" 
+            <div class="card-actions" onclick="event.stopPropagation()">
+              <a href="${articleUrl}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
                  class="btn-icon external-link-btn" 
@@ -422,7 +437,7 @@ class NewsRenderer {
                 ${isSaved ? '★' : '☆'}
               </button>
               <button class="btn-icon share-btn" 
-                      title="Share Article" 
+                      title="Share Article Link" 
                       onclick="window.NewsUI.shareArticle('${article.id}')">
                 🔗
               </button>
@@ -437,15 +452,16 @@ class NewsRenderer {
   renderCompactCardHtml(article) {
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
+    const articleUrl = this.escapeHtml(article['Article URL']);
 
     return `
-      <article class="compact-news-row" data-id="${article.id}">
-        <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="compact-thumb" title="Open original article">
+      <article class="compact-news-row" data-id="${article.id}" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
+        <div class="compact-thumb">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </a>
+        </div>
         <div class="compact-body">
           <div class="compact-meta">
             <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
@@ -454,14 +470,14 @@ class NewsRenderer {
             <span class="compact-read">${article.ReadTime || '3 min'}</span>
           </div>
           <h4 class="compact-title">
-            <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link">
+            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link" onclick="event.stopPropagation()">
               ${this.highlightQuery(article.Headline)}
             </a>
           </h4>
           <span class="compact-author">By <strong>${this.highlightQuery(article.Author || 'The Hindu Bureau')}</strong></span>
         </div>
-        <div class="compact-actions">
-          <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Original Link">
+        <div class="compact-actions" onclick="event.stopPropagation()">
+          <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="btn-icon" title="Open original article link">
             ↗
           </a>
           <button class="btn-icon ${isSaved ? 'bookmarked' : ''}" onclick="window.NewsUI.toggleBookmark('${article.id}')">
@@ -475,21 +491,22 @@ class NewsRenderer {
   // Trending Card HTML
   renderTrendingCardHtml(article) {
     const catColor = this.getCategoryColor(article.Category);
+    const articleUrl = this.escapeHtml(article['Article URL']);
 
     return `
-      <div class="trending-card-item">
-        <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="trending-img-wrap" title="Open story">
+      <div class="trending-card-item" onclick="window.NewsRenderer.openArticleUrl('${articleUrl}')">
+        <div class="trending-img-wrap">
           <img src="${this.escapeHtml(article['Image URL'])}" 
                alt="${this.escapeHtml(article.Headline)}"
                onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')"
                loading="lazy">
-        </a>
+        </div>
         <div class="trending-content">
           <span class="badge-category-mini" style="color:${catColor}; background:${catColor}15">
             ${article.Category || 'Trending'}
           </span>
           <h4 class="trending-title">
-            <a href="${this.escapeHtml(article['Article URL'])}" target="_blank" rel="noopener noreferrer" class="headline-link">
+            <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link" onclick="event.stopPropagation()">
               ${this.escapeHtml(article.Headline)}
             </a>
           </h4>
@@ -518,7 +535,7 @@ class NewsRenderer {
     }
 
     container.innerHTML = bookmarks.map(a => `
-      <div class="bookmark-item-row" onclick="window.NewsUI.openReaderModal('${a.id}')">
+      <div class="bookmark-item-row" onclick="window.NewsRenderer.openArticleUrl('${this.escapeHtml(a['Article URL'])}')">
         <img src="${this.escapeHtml(a['Image URL'])}" onerror="window.NewsUI.handleImageFallback(this, '${a.Category}')">
         <div class="bookmark-item-info">
           <span class="badge-category-mini">${a.Category || 'News'}</span>
@@ -546,6 +563,7 @@ class NewsRenderer {
 
     const isSaved = this.isBookmarked(article.id);
     const catColor = this.getCategoryColor(article.Category);
+    const articleUrl = this.escapeHtml(article['Article URL']);
 
     this.stopSpeech();
 
@@ -553,16 +571,20 @@ class NewsRenderer {
       <div class="reader-header">
         <div class="reader-meta-bar">
           <span class="badge-category" style="background:${catColor}">${article.Category || 'News'}</span>
-          <span class="reader-date">From Google Sheet Feed</span>
+          <span class="reader-date">Google Sheet Live Item</span>
           <span class="reader-readtime">⏱️ ${article.ReadTime || '3 min read'}</span>
         </div>
-        <h1 class="reader-headline">${this.escapeHtml(article.Headline)}</h1>
+        <h1 class="reader-headline">
+          <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="headline-link" title="Open actual article on publisher website">
+            ${this.escapeHtml(article.Headline)}
+          </a>
+        </h1>
         
         <div class="reader-author-strip">
           <div class="author-avatar reader-avatar-lg">${this.getAuthorInitials(article.Author)}</div>
           <div>
             <div class="reader-author-name">By <strong>${this.escapeHtml(article.Author || 'The Hindu Bureau')}</strong></div>
-            <div class="reader-source-tag">Source: ${this.escapeHtml(article.Source || 'Google Sheet Feed')}</div>
+            <div class="reader-source-tag">Source: <a href="${articleUrl}" target="_blank" style="color:var(--brand-primary); text-decoration:underline;">${this.escapeHtml(article.Source || 'The Hindu')} ↗</a></div>
           </div>
           
           <div class="reader-controls">
@@ -582,10 +604,12 @@ class NewsRenderer {
       </div>
 
       <div class="reader-hero-image">
-        <img src="${this.escapeHtml(article['Image URL'])}" 
-             alt="${this.escapeHtml(article.Headline)}"
-             onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')">
-        <div class="reader-image-caption">Image via ${article.Source || 'Editorial News Wire'}</div>
+        <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" title="Click to open original article">
+          <img src="${this.escapeHtml(article['Image URL'])}" 
+               alt="${this.escapeHtml(article.Headline)}"
+               onerror="window.NewsUI.handleImageFallback(this, '${article.Category}')">
+        </a>
+        <div class="reader-image-caption">Image via Editorial News Wire • Click image to open original article</div>
       </div>
 
       <div class="reader-article-content font-size-normal">
@@ -593,20 +617,20 @@ class NewsRenderer {
           ${this.escapeHtml(article.Headline)}
         </p>
         <p>
-          This verified story is sourced directly from the connected Google Sheet data repository and categorized under <strong>${this.escapeHtml(article.Category || 'General')}</strong>.
+          This verified story is sourced directly from the Google Sheet and published on <strong>${this.escapeHtml(article.Source || 'The Hindu')}</strong> under <strong>${this.escapeHtml(article.Category || 'General')}</strong>.
         </p>
       </div>
 
       <div class="reader-bottom-cta">
         <div>
-          <h4>Read the complete original article?</h4>
-          <p>Click below to jump directly to the official publication link.</p>
+          <h4>Read the complete original article on the publisher website?</h4>
+          <p>Click below to jump directly to the live article page.</p>
         </div>
-        <a href="${this.escapeHtml(article['Article URL'])}" 
+        <a href="${articleUrl}" 
            target="_blank" 
            rel="noopener noreferrer" 
            class="btn btn-primary btn-lg">
-          Visit Original Article Link ↗
+          Visit Original Article Page ↗
         </a>
       </div>
     `;

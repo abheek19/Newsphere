@@ -5,9 +5,17 @@
 
 class NewsSyncEngine {
   constructor() {
-    this.storageKey = 'newssphere_google_sheet_articles_v2';
-    this.configKey = 'newssphere_sync_config_v2';
+    this.storageKey = 'newssphere_google_sheet_articles_v3';
+    this.configKey = 'newssphere_sync_config_v3';
     this.defaultSheetUrl = 'https://docs.google.com/spreadsheets/d/1MolkiancFTaDSWEW1rYtg0yY7XP6R65pJh7iPsRtpXs/export?format=csv';
+
+    // Clear any obsolete old version caches
+    try {
+      localStorage.removeItem('newssphere_custom_articles_v1');
+      localStorage.removeItem('newssphere_google_sheet_articles_v2');
+      localStorage.removeItem('newssphere_bookmarks_v1');
+      localStorage.removeItem('newssphere_bookmarks_v2');
+    } catch (e) {}
   }
 
   // Load saved config
